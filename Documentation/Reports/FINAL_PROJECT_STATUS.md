@@ -35,7 +35,7 @@ https://github.com/YOUR_USERNAME/unity-indie-shooter
 
 2. **Підключити локальний репозиторій**:
    ```bash
-   cd /Users/george/RovoDev/Shooter
+   cd /Users/george/Unity Indie Shooter/Shooter
    git remote add origin https://github.com/YOUR_USERNAME/unity-indie-shooter.git
    git branch -M main
    git push -u origin main

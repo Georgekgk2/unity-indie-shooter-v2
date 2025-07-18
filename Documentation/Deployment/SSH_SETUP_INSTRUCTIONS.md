@@ -27,7 +27,7 @@ ssh -T git@github.com -i ~/.ssh/id_github_unity_shooter
 
 ```bash
 # Перехід до директорії проекту
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 
 # Налаштування віддаленого репозиторію через SSH
 git remote set-url origin git@github.com:Georgekgk2/unity-indie-shooter-v2.git

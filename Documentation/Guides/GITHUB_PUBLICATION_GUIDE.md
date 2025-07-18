@@ -32,7 +32,7 @@
 Виконати команди в терміналі:
 
 ```bash
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 
 # Додати remote origin (замініть YOUR_USERNAME на ваш GitHub username)
 git remote add origin https://github.com/YOUR_USERNAME/unity-indie-shooter.git

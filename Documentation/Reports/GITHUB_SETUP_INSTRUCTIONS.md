@@ -34,7 +34,7 @@ Your Unity Indie Shooter project is now ready for GitHub! Here's what has been p
 
 3. **Connect Local Repository**
    ```bash
-   cd /Users/george/RovoDev/Shooter
+   cd /Users/george/Unity Indie Shooter/Shooter
    git remote add origin https://github.com/YOUR_USERNAME/unity-indie-shooter.git
    git branch -M main
    git push -u origin main
@@ -43,7 +43,7 @@ Your Unity Indie Shooter project is now ready for GitHub! Here's what has been p
 ### **Option 2: Use GitHub CLI (if installed)**
 
 ```bash
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 gh repo create unity-indie-shooter --public --source=. --remote=origin --push
 ```
 
@@ -51,7 +51,7 @@ gh repo create unity-indie-shooter --public --source=. --remote=origin --push
 
 1. Open GitHub Desktop
 2. File → Add Local Repository
-3. Choose `/Users/george/RovoDev/Shooter`
+3. Choose `/Users/george/Unity Indie Shooter/Shooter`
 4. Publish repository to GitHub
 
 ---

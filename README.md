@@ -42,4 +42,4 @@ Documentation/Deployment/deploy_to_github_https.sh
 - Публікації на GitHub
 
 ---
-**Оптимізовано:** RovoDev AI Agent | **Дата:** Серпень 2025
+**Останнє оновлення:** 18 липня 2025

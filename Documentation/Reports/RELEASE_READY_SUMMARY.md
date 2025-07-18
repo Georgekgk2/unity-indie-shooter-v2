@@ -31,7 +31,7 @@
 ### **КРОК 2: Підключити та завантажити**
 
 ```bash
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 
 # Підключити до GitHub (замінити YOUR_USERNAME)
 git remote add origin https://github.com/YOUR_USERNAME/unity-indie-shooter.git

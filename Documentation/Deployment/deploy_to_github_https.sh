@@ -2,7 +2,12 @@
 
 echo "🚀 Завантаження проекту на GitHub через HTTPS..."
 
-cd /Users/george/RovoDev/Shooter
+# Перехід до директорії проекту
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$PROJECT_DIR"
+
+echo "📁 Робоча директорія: $(pwd)"
 
 # Ініціалізація Git (якщо потрібно)
 if [ ! -d ".git" ]; then

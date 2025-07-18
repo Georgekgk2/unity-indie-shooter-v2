@@ -2,7 +2,12 @@
 
 echo "🚀 Завантаження проекту на GitHub з використанням SSH..."
 
-cd /Users/george/RovoDev/Shooter
+# Перехід до директорії проекту
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$PROJECT_DIR"
+
+echo "📁 Робоча директорія: $(pwd)"
 
 # Перевірка наявності SSH ключа для GitHub
 if [ -f ~/.ssh/id_github_unity_shooter ]; then
@@ -84,8 +89,8 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Temporary files created during optimization
-tmp_rovodev_*
+# Temporary files
+tmp_*
 GITIGNORE
 
 # Налаштування Git користувача (якщо потрібно)

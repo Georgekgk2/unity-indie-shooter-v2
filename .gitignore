@@ -48,5 +48,5 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
-# Temporary files created during optimization
-tmp_rovodev_*
+# Temporary files
+tmp_*

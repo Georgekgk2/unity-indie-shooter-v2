@@ -6,7 +6,7 @@
 
 ```bash
 # 1. Перейдіть до директорії проекту
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 
 # 2. Ініціалізуйте Git (якщо потрібно)
 git init
@@ -42,7 +42,7 @@ git push -u origin main
 
 ```bash
 # Перейдіть до директорії проекту
-cd /Users/george/RovoDev/Shooter
+cd /Users/george/Unity Indie Shooter/Shooter
 
 # Перевірте поточний статус
 pwd

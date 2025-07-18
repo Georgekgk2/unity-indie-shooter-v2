@@ -36,13 +36,13 @@
 ### Варіант 1: Автоматичне завантаження (SSH)
 ```bash
 # Виконайте цю команду в терміналі:
-/Users/george/RovoDev/Shooter/deploy_with_ssh.sh
+/Users/george/Unity Indie Shooter/Shooter/deploy_with_ssh.sh
 ```
 
 ### Варіант 2: Автоматичне завантаження (HTTPS)
 ```bash
 # Якщо SSH не працює:
-/Users/george/RovoDev/Shooter/deploy_to_github_https.sh
+/Users/george/Unity Indie Shooter/Shooter/deploy_to_github_https.sh
 ```
 
 ### Варіант 3: Ручне завантаження
@@ -73,13 +73,13 @@
 
 ## 🔗 Посилання на файли
 
-Всі файли знаходяться в директорії `/Users/george/RovoDev/Shooter/`:
+Всі файли знаходяться в директорії `/Users/george/Unity Indie Shooter/Shooter/`:
 
-1. **deploy_with_ssh.sh** - `/Users/george/RovoDev/Shooter/deploy_with_ssh.sh`
-2. **deploy_to_github_https.sh** - `/Users/george/RovoDev/Shooter/deploy_to_github_https.sh`
-3. **SSH_SETUP_INSTRUCTIONS.md** - `/Users/george/RovoDev/Shooter/SSH_SETUP_INSTRUCTIONS.md`
-4. **MANUAL_DEPLOYMENT_GUIDE.md** - `/Users/george/RovoDev/Shooter/MANUAL_DEPLOYMENT_GUIDE.md`
-5. **DEPLOYMENT_README.md** - `/Users/george/RovoDev/Shooter/DEPLOYMENT_README.md` (цей файл)
+1. **deploy_with_ssh.sh** - `/Users/george/Unity Indie Shooter/Shooter/deploy_with_ssh.sh`
+2. **deploy_to_github_https.sh** - `/Users/george/Unity Indie Shooter/Shooter/deploy_to_github_https.sh`
+3. **SSH_SETUP_INSTRUCTIONS.md** - `/Users/george/Unity Indie Shooter/Shooter/SSH_SETUP_INSTRUCTIONS.md`
+4. **MANUAL_DEPLOYMENT_GUIDE.md** - `/Users/george/Unity Indie Shooter/Shooter/MANUAL_DEPLOYMENT_GUIDE.md`
+5. **DEPLOYMENT_README.md** - `/Users/george/Unity Indie Shooter/Shooter/DEPLOYMENT_README.md` (цей файл)
 
 ## 🎉 Після завантаження
 
@@ -102,6 +102,6 @@
 
 ---
 
-**Створено:** RovoDev AI Agent  
-**Дата:** 21 серпня 2025  
+**Створено:** AI optimization  
+**Дата:** 18 липня 2025  
 **Проект:** Unity Indie Shooter v2 - Comprehensive Optimization

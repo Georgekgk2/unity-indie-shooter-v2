@@ -5,86 +5,86 @@ using System.Collections.Generic;
 public class WeaponController : MonoBehaviour
 {
     [Header("Weapon Setup")]
-    [Tooltip("Префаб кулі, яка буде спавнитися")]
+    [Tooltip("ГЏГ°ГҐГґГ ГЎ ГЄГіГ«Ві, ГїГЄГ  ГЎГіГ¤ГҐ Г±ГЇГ ГўГ­ГЁГІГЁГ±Гї")]
     public GameObject bulletPrefab;
-    [Tooltip("Точка, з якої буде спавнитися і запускатися куля")]
+    [Tooltip("Г’Г®Г·ГЄГ , Г§ ГїГЄГ®Вї ГЎГіГ¤ГҐ Г±ГЇГ ГўГ­ГЁГІГЁГ±Гї Ві Г§Г ГЇГіГ±ГЄГ ГІГЁГ±Гї ГЄГіГ«Гї")]
     public Transform bulletSpawnPoint;
-    [Tooltip("Сила, з якою куля буде запущена")]
+    [Tooltip("Г‘ГЁГ«Г , Г§ ГїГЄГ®Гѕ ГЄГіГ«Гї ГЎГіГ¤ГҐ Г§Г ГЇГіГ№ГҐГ­Г ")]
     public float bulletForce = 30f;
-    [Tooltip("Множник розкиду кулі (чим вище, тим більше розкид)")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ Г°Г®Г§ГЄГЁГ¤Гі ГЄГіГ«Ві (Г·ГЁГ¬ ГўГЁГ№ГҐ, ГІГЁГ¬ ГЎВіГ«ГјГёГҐ Г°Г®Г§ГЄГЁГ¤)")]
     public float bulletSpread = 0.05f;
 
-    [Tooltip("Чи має куля летіти прямо в центр екрану (Raycast Aiming)?")]
+    [Tooltip("Г—ГЁ Г¬Г Вє ГЄГіГ«Гї Г«ГҐГІВіГІГЁ ГЇГ°ГїГ¬Г® Гў Г¶ГҐГ­ГІГ° ГҐГЄГ°Г Г­Гі (Raycast Aiming)?")]
     public bool useRaycastAiming = true;
-    [Tooltip("Максимальна відстань для Raycast Aiming")]
+    [Tooltip("ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­Г  ГўВіГ¤Г±ГІГ Г­Гј Г¤Г«Гї Raycast Aiming")]
     public float maxAimDistance = 500f;
 
 
     [Header("Fire Rate & Ammo")]
-    [Tooltip("Кількість пострілів за секунду")]
+    [Tooltip("ГЉВіГ«ГјГЄВіГ±ГІГј ГЇГ®Г±ГІГ°ВіГ«ВіГў Г§Г  Г±ГҐГЄГіГ­Г¤Гі")]
     public float fireRate = 8f;
-    [Tooltip("Розмір магазину (кількість патронів)")]
+    [Tooltip("ГђГ®Г§Г¬ВіГ° Г¬Г ГЈГ Г§ГЁГ­Гі (ГЄВіГ«ГјГЄВіГ±ГІГј ГЇГ ГІГ°Г®Г­ВіГў)")]
     public int magazineSize = 30;
-    [Tooltip("Час перезарядки (у секундах)")]
+    [Tooltip("Г—Г Г± ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ (Гі Г±ГҐГЄГіГ­Г¤Г Гµ)")]
     public float reloadTime = 2f;
-    [Tooltip("Кнопка для перезарядки")]
+    [Tooltip("ГЉГ­Г®ГЇГЄГ  Г¤Г«Гї ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ")]
     public KeyCode reloadKey = KeyCode.R;
-    [Tooltip("Кількість доступних перезарядок для цієї зброї")] // НОВЕ ПОЛЕ
-    [SerializeField] private int reloadCharges = 1; // За замовчуванням даємо 1 заряд
+    [Tooltip("ГЉВіГ«ГјГЄВіГ±ГІГј Г¤Г®Г±ГІГіГЇГ­ГЁГµ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г®ГЄ Г¤Г«Гї Г¶ВіВєВї Г§ГЎГ°Г®Вї")] // ГЌГЋГ‚Г… ГЏГЋГ‹Г…
+    [SerializeField] private int reloadCharges = 1; // Г‡Г  Г§Г Г¬Г®ГўГ·ГіГўГ Г­Г­ГїГ¬ Г¤Г ВєГ¬Г® 1 Г§Г Г°ГїГ¤
 
     [Header("Visual & Audio Effects")]
-    [Tooltip("Система частинок для спалаху дула")]
+    [Tooltip("Г‘ГЁГ±ГІГҐГ¬Г  Г·Г Г±ГІГЁГ­Г®ГЄ Г¤Г«Гї Г±ГЇГ Г«Г ГµГі Г¤ГіГ«Г ")]
     public ParticleSystem muzzleFlash;
-    [Tooltip("Аудіо джерело для пострілів")]
+    [Tooltip("ГЂГіГ¤ВіГ® Г¤Г¦ГҐГ°ГҐГ«Г® Г¤Г«Гї ГЇГ®Г±ГІГ°ВіГ«ВіГў")]
     public AudioSource audioSource;
-    [Tooltip("Звуковий кліп для пострілу")]
+    [Tooltip("Г‡ГўГіГЄГ®ГўГЁГ© ГЄГ«ВіГЇ Г¤Г«Гї ГЇГ®Г±ГІГ°ВіГ«Гі")]
     public AudioClip shootSoundClip;
-    [Tooltip("Звуковий кліп для перезарядки")]
+    [Tooltip("Г‡ГўГіГЄГ®ГўГЁГ© ГЄГ«ВіГЇ Г¤Г«Гї ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ")]
     public AudioClip reloadSoundClip;
-    [Tooltip("Звуковий кліп, коли немає патронів")]
+    [Tooltip("Г‡ГўГіГЄГ®ГўГЁГ© ГЄГ«ВіГЇ, ГЄГ®Г«ГЁ Г­ГҐГ¬Г Вє ГЇГ ГІГ°Г®Г­ВіГў")]
     public AudioClip emptyClipSound;
 
     [Header("Aim Down Sights (ADS) Settings")]
-    [Tooltip("Чи підтримує ця зброя режим прицілювання (ADS)?")]
+    [Tooltip("Г—ГЁ ГЇВіГ¤ГІГ°ГЁГ¬ГіВє Г¶Гї Г§ГЎГ°Г®Гї Г°ГҐГ¦ГЁГ¬ ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї (ADS)?")]
     public bool canAim = true;
-    [Tooltip("Кнопка для входу/виходу з режиму прицілювання.")]
+    [Tooltip("ГЉГ­Г®ГЇГЄГ  Г¤Г«Гї ГўГµГ®Г¤Гі/ГўГЁГµГ®Г¤Гі Г§ Г°ГҐГ¦ГЁГ¬Гі ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї.")]
     public KeyCode aimKey = KeyCode.Mouse1;
-    [Tooltip("Локальна позиція зброї, коли вона прицілена (ADS).")]
+    [Tooltip("Г‹Г®ГЄГ Г«ГјГ­Г  ГЇГ®Г§ГЁГ¶ВіГї Г§ГЎГ°Г®Вї, ГЄГ®Г«ГЁ ГўГ®Г­Г  ГЇГ°ГЁГ¶ВіГ«ГҐГ­Г  (ADS).")]
     public Vector3 aimPosition;
-    [Tooltip("Швидкість переходу до/від режиму прицілювання.")]
+    [Tooltip("ГГўГЁГ¤ГЄВіГ±ГІГј ГЇГҐГ°ГҐГµГ®Г¤Гі Г¤Г®/ГўВіГ¤ Г°ГҐГ¦ГЁГ¬Гі ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї.")]
     public float aimSpeed = 10f;
-    [Tooltip("Значення FOV камери, коли зброя прицілена.")]
+    [Tooltip("Г‡Г­Г Г·ГҐГ­Г­Гї FOV ГЄГ Г¬ГҐГ°ГЁ, ГЄГ®Г«ГЁ Г§ГЎГ°Г®Гї ГЇГ°ГЁГ¶ВіГ«ГҐГ­Г .")]
     public float aimFOV = 40f;
-    [Tooltip("Множник розкиду кулі, коли зброя прицілена (1.0 = без змін, 0.5 = половина розкиду).")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ Г°Г®Г§ГЄГЁГ¤Гі ГЄГіГ«Ві, ГЄГ®Г«ГЁ Г§ГЎГ°Г®Гї ГЇГ°ГЁГ¶ВіГ«ГҐГ­Г  (1.0 = ГЎГҐГ§ Г§Г¬ВіГ­, 0.5 = ГЇГ®Г«Г®ГўГЁГ­Г  Г°Г®Г§ГЄГЁГ¤Гі).")]
     [Range(0f, 1f)]
     public float aimSpreadMultiplier = 0.5f;
 
     [Header("Recoil Settings")]
-    [Tooltip("Вертикальна віддача (як сильно камера підкидається вгору)")]
+    [Tooltip("Г‚ГҐГ°ГІГЁГЄГ Г«ГјГ­Г  ГўВіГ¤Г¤Г Г·Г  (ГїГЄ Г±ГЁГ«ГјГ­Г® ГЄГ Г¬ГҐГ°Г  ГЇВіГ¤ГЄГЁГ¤Г ВєГІГјГ±Гї ГўГЈГ®Г°Гі)")]
     public float recoilX = 2f;
-    [Tooltip("Горизонтальна віддача (як сильно камера відхиляється вліво/вправо)")]
+    [Tooltip("ГѓГ®Г°ГЁГ§Г®Г­ГІГ Г«ГјГ­Г  ГўВіГ¤Г¤Г Г·Г  (ГїГЄ Г±ГЁГ«ГјГ­Г® ГЄГ Г¬ГҐГ°Г  ГўВіГ¤ГµГЁГ«ГїВєГІГјГ±Гї ГўГ«ВіГўГ®/ГўГЇГ°Г ГўГ®)")]
     public float recoilY = 0.5f;
-    [Tooltip("Віддача по Z-осі (нахил)")]
+    [Tooltip("Г‚ВіГ¤Г¤Г Г·Г  ГЇГ® Z-Г®Г±Ві (Г­Г ГµГЁГ«)")]
     public float recoilZ = 0.5f;
-    [Tooltip("Швидкість, з якою віддача застосовується")]
+    [Tooltip("ГГўГЁГ¤ГЄВіГ±ГІГј, Г§ ГїГЄГ®Гѕ ГўВіГ¤Г¤Г Г·Г  Г§Г Г±ГІГ®Г±Г®ГўГіВєГІГјГ±Гї")]
     public float recoilSnappiness = 10f;
-    [Tooltip("Швидкість, з якою камера повертається після віддачі")]
+    [Tooltip("ГГўГЁГ¤ГЄВіГ±ГІГј, Г§ ГїГЄГ®Гѕ ГЄГ Г¬ГҐГ°Г  ГЇГ®ГўГҐГ°ГІГ ВєГІГјГ±Гї ГЇВіГ±Г«Гї ГўВіГ¤Г¤Г Г·Ві")]
     public float recoilReturnSpeed = 5f;
-    [Tooltip("Множник віддачі, коли зброя прицілена (менше 1 = менша віддача).")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ ГўВіГ¤Г¤Г Г·Ві, ГЄГ®Г«ГЁ Г§ГЎГ°Г®Гї ГЇГ°ГЁГ¶ВіГ«ГҐГ­Г  (Г¬ГҐГ­ГёГҐ 1 = Г¬ГҐГ­ГёГ  ГўВіГ¤Г¤Г Г·Г ).")]
     [Range(0f, 1f)]
     public float aimRecoilMultiplier = 0.5f;
 
     [Header("Pickup & Drop Settings")]
-    [Tooltip("Префаб світського об'єкта цієї зброї для викидання.")]
+    [Tooltip("ГЏГ°ГҐГґГ ГЎ Г±ГўВіГІГ±ГјГЄГ®ГЈГ® Г®ГЎ'ВєГЄГІГ  Г¶ВіВєВї Г§ГЎГ°Г®Вї Г¤Г«Гї ГўГЁГЄГЁГ¤Г Г­Г­Гї.")]
     public GameObject weaponWorldPrefab;
-    [Tooltip("Чи можна викинути цю зброю? (Наприклад, не можна викинути кулаки або базовий ніж)")]
+    [Tooltip("Г—ГЁ Г¬Г®Г¦Г­Г  ГўГЁГЄГЁГ­ГіГІГЁ Г¶Гѕ Г§ГЎГ°Г®Гѕ? (ГЌГ ГЇГ°ГЁГЄГ«Г Г¤, Г­ГҐ Г¬Г®Г¦Г­Г  ГўГЁГЄГЁГ­ГіГІГЁ ГЄГіГ«Г ГЄГЁ Г ГЎГ® ГЎГ Г§Г®ГўГЁГ© Г­ВіГ¦)")]
     public bool isDroppable = true;
-    [Tooltip("Ім'я зброї для відображення в UI.")]
+    [Tooltip("ВІГ¬'Гї Г§ГЎГ°Г®Вї Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Гў UI.")]
     public string weaponDisplayName = "Weapon";
-    [Tooltip("Іконка зброї для відображення в UI.")]
+    [Tooltip("ВІГЄГ®Г­ГЄГ  Г§ГЎГ°Г®Вї Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Гў UI.")]
     public Sprite weaponIcon;
 
-    // Приватні змінні для стану зброї
+    // ГЏГ°ГЁГўГ ГІГ­Ві Г§Г¬ВіГ­Г­Ві Г¤Г«Гї Г±ГІГ Г­Гі Г§ГЎГ°Г®Вї
     private int currentAmmo;
     private float nextFireTime = 0f;
     private bool isReloading = false;
@@ -94,16 +94,16 @@ public class WeaponController : MonoBehaviour
     private float initialCameraFOV;
     private bool isAiming = false;
 
-    // Посилання на інші скрипти гравця
+    // ГЏГ®Г±ГЁГ«Г Г­Г­Гї Г­Г  ВіГ­ГёВі Г±ГЄГ°ГЁГЇГІГЁ ГЈГ°Г ГўГ¶Гї
     private PlayerMovement playerMovement;
     private PlayerHealth playerHealth;
     private MouseLook mouseLook;
 
-    // Змінні для керування віддачею
+    // Г‡Г¬ВіГ­Г­Ві Г¤Г«Гї ГЄГҐГ°ГіГўГ Г­Г­Гї ГўВіГ¤Г¤Г Г·ГҐГѕ
     private Vector3 currentRecoilRotation;
     private Vector3 targetRecoilRotation;
 
-    // Корутини для безпечного управління
+    // ГЉГ®Г°ГіГІГЁГ­ГЁ Г¤Г«Гї ГЎГҐГ§ГЇГҐГ·Г­Г®ГЈГ® ГіГЇГ°Г ГўГ«ВіГ­Г­Гї
     private Coroutine reloadCoroutine;
 
     void Awake()
@@ -113,7 +113,7 @@ public class WeaponController : MonoBehaviour
         mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("WeaponController: Main Camera не знайдена. Функції камери можуть працювати некоректно.", this);
+            Debug.LogError("WeaponController: Main Camera Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г . Г”ГіГ­ГЄГ¶ВіВї ГЄГ Г¬ГҐГ°ГЁ Г¬Г®Г¦ГіГІГј ГЇГ°Г Г¶ГѕГўГ ГІГЁ Г­ГҐГЄГ®Г°ГҐГЄГІГ­Г®.", this);
         }
 
         if (audioSource == null)
@@ -121,7 +121,7 @@ public class WeaponController : MonoBehaviour
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
-                Debug.LogWarning("WeaponController: AudioSource не знайдено на об'єкті зброї. Звуки не будуть відтворюватися.", this);
+                Debug.LogWarning("WeaponController: AudioSource Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® Г­Г  Г®ГЎ'ВєГЄГІВі Г§ГЎГ°Г®Вї. Г‡ГўГіГЄГЁ Г­ГҐ ГЎГіГ¤ГіГІГј ГўВіГ¤ГІГўГ®Г°ГѕГўГ ГІГЁГ±Гї.", this);
             }
         }
 
@@ -136,60 +136,60 @@ public class WeaponController : MonoBehaviour
         mouseLook = GetComponentInParent<MouseLook>();
         if (mouseLook == null)
         {
-            Debug.LogWarning("WeaponController: MouseLook не знайдено в батьківських об'єктах. Віддача не працюватиме.", this);
+            Debug.LogWarning("WeaponController: MouseLook Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® Гў ГЎГ ГІГјГЄВіГўГ±ГјГЄГЁГµ Г®ГЎ'ВєГЄГІГ Гµ. Г‚ВіГ¤Г¤Г Г·Г  Г­ГҐ ГЇГ°Г Г¶ГѕГўГ ГІГЁГ¬ГҐ.", this);
         }
     }
 
-    void OnEnable() // Викликається, коли GameObject зброї активується
+    void OnEnable() // Г‚ГЁГЄГ«ГЁГЄГ ВєГІГјГ±Гї, ГЄГ®Г«ГЁ GameObject Г§ГЎГ°Г®Вї Г ГЄГІГЁГўГіВєГІГјГ±Гї
     {
-        OnEquip(); // Викликаємо OnEquip при активації (екіпіровці)
+        OnEquip(); // Г‚ГЁГЄГ«ГЁГЄГ ВєГ¬Г® OnEquip ГЇГ°ГЁ Г ГЄГІГЁГўГ Г¶ВіВї (ГҐГЄВіГЇВіГ°Г®ГўГ¶Ві)
     }
 
-    void OnDisable() // Викликається, коли GameObject зброї деактивується
+    void OnDisable() // Г‚ГЁГЄГ«ГЁГЄГ ВєГІГјГ±Гї, ГЄГ®Г«ГЁ GameObject Г§ГЎГ°Г®Вї Г¤ГҐГ ГЄГІГЁГўГіВєГІГјГ±Гї
     {
-        // Безпечно зупиняємо всі корутини
+        // ГЃГҐГ§ГЇГҐГ·Г­Г® Г§ГіГЇГЁГ­ГїВєГ¬Г® ГўГ±Ві ГЄГ®Г°ГіГІГЁГ­ГЁ
         if (reloadCoroutine != null)
         {
             StopCoroutine(reloadCoroutine);
             reloadCoroutine = null;
         }
         
-        OnUnequip(); // Викликаємо OnUnequip при деактивації (знятті)
+        OnUnequip(); // Г‚ГЁГЄГ«ГЁГЄГ ВєГ¬Г® OnUnequip ГЇГ°ГЁ Г¤ГҐГ ГЄГІГЁГўГ Г¶ВіВї (Г§Г­ГїГІГІВі)
     }
 
 
     void Update()
     {
-        // Не дозволяємо стріляти/перезаряджатися/прицілюватися, якщо гравець мертвий
+        // ГЌГҐ Г¤Г®Г§ГўГ®Г«ГїВєГ¬Г® Г±ГІГ°ВіГ«ГїГІГЁ/ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ГІГЁГ±Гї/ГЇГ°ГЁГ¶ВіГ«ГѕГўГ ГІГЁГ±Гї, ГїГЄГ№Г® ГЈГ°Г ГўГҐГ¶Гј Г¬ГҐГ°ГІГўГЁГ©
         if (playerHealth != null && playerHealth.IsDead())
         {
             if (isAiming) ResetADS();
-            // Повертаємо віддачу, якщо гравець мертвий
+            // ГЏГ®ГўГҐГ°ГІГ ВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі, ГїГЄГ№Г® ГЈГ°Г ГўГҐГ¶Гј Г¬ГҐГ°ГІГўГЁГ©
             targetRecoilRotation = Vector3.zero;
             currentRecoilRotation = Vector3.zero;
-            UpdateRecoil(); // Оновлюємо віддачу, щоб вона згасала
+            UpdateRecoil(); // ГЋГ­Г®ГўГ«ГѕВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі, Г№Г®ГЎ ГўГ®Г­Г  Г§ГЈГ Г±Г Г«Г 
             return;
         }
 
-        // Не дозволяємо стріляти або перезаряджатися, якщо ми вже перезаряджаємося
+        // ГЌГҐ Г¤Г®Г§ГўГ®Г«ГїВєГ¬Г® Г±ГІГ°ВіГ«ГїГІГЁ Г ГЎГ® ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ГІГЁГ±Гї, ГїГЄГ№Г® Г¬ГЁ ГўГ¦ГҐ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ВєГ¬Г®Г±Гї
         if (isReloading)
         {
-            if (isAiming) ResetADS(); // Якщо перезаряджаємося, виходимо з ADS
-            UpdateRecoil(); // Оновлюємо віддачу, щоб вона згасала
+            if (isAiming) ResetADS(); // ГџГЄГ№Г® ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ВєГ¬Г®Г±Гї, ГўГЁГµГ®Г¤ГЁГ¬Г® Г§ ADS
+            UpdateRecoil(); // ГЋГ­Г®ГўГ«ГѕВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі, Г№Г®ГЎ ГўГ®Г­Г  Г§ГЈГ Г±Г Г«Г 
             return;
         }
 
-        // --- Обробка прицілювання (ADS) ---
+        // --- ГЋГЎГ°Г®ГЎГЄГ  ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї (ADS) ---
         if (canAim && playerMovement != null)
         {
-            // Не дозволяємо прицілюватися під час спрінту, ковзання або ривка
+            // ГЌГҐ Г¤Г®Г§ГўГ®Г«ГїВєГ¬Г® ГЇГ°ГЁГ¶ВіГ«ГѕГўГ ГІГЁГ±Гї ГЇВіГ¤ Г·Г Г± Г±ГЇГ°ВіГ­ГІГі, ГЄГ®ГўГ§Г Г­Г­Гї Г ГЎГ® Г°ГЁГўГЄГ 
             if (playerMovement.IsSprinting() || playerMovement.IsSliding() || playerMovement.IsDashing())
             {
                 if (isAiming) ResetADS();
             }
-            else // Якщо не в цих станах, дозволяємо прицілюватися
+            else // ГџГЄГ№Г® Г­ГҐ Гў Г¶ГЁГµ Г±ГІГ Г­Г Гµ, Г¤Г®Г§ГўГ®Г«ГїВєГ¬Г® ГЇГ°ГЁГ¶ВіГ«ГѕГўГ ГІГЁГ±Гї
             {
-                if (Input.GetKey(aimKey)) // "Утримувати" для прицілювання
+                if (Input.GetKey(aimKey)) // "Г“ГІГ°ГЁГ¬ГіГўГ ГІГЁ" Г¤Г«Гї ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї
                 {
                     if (!isAiming) isAiming = true;
                 }
@@ -200,11 +200,11 @@ public class WeaponController : MonoBehaviour
             }
         }
 
-        // Плавне переміщення зброї та FOV камери
+        // ГЏГ«Г ГўГ­ГҐ ГЇГҐГ°ГҐГ¬ВіГ№ГҐГ­Г­Гї Г§ГЎГ°Г®Вї ГІГ  FOV ГЄГ Г¬ГҐГ°ГЁ
         UpdateWeaponADS();
 
 
-        // Обробка пострілу (ЛКМ)
+        // ГЋГЎГ°Г®ГЎГЄГ  ГЇГ®Г±ГІГ°ВіГ«Гі (Г‹ГЉГЊ)
         if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
         {
             if (currentAmmo > 0)
@@ -221,18 +221,18 @@ public class WeaponController : MonoBehaviour
             }
         }
 
-        // Обробка перезарядки (клавіша R)
+        // ГЋГЎГ°Г®ГЎГЄГ  ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ (ГЄГ«Г ГўВіГёГ  R)
         if (Input.GetKeyDown(reloadKey) && currentAmmo < magazineSize)
         {
             Reload();
         }
 
-        // Оновлення віддачі (відбувається кожен кадр)
+        // ГЋГ­Г®ГўГ«ГҐГ­Г­Гї ГўВіГ¤Г¤Г Г·Ві (ГўВіГ¤ГЎГіГўГ ВєГІГјГ±Гї ГЄГ®Г¦ГҐГ­ ГЄГ Г¤Г°)
         UpdateRecoil();
     }
     
     /// <summary>
-    /// Плавне переміщення зброї до цільової позиції (ADS або Hip) та зміна FOV.
+    /// ГЏГ«Г ГўГ­ГҐ ГЇГҐГ°ГҐГ¬ВіГ№ГҐГ­Г­Гї Г§ГЎГ°Г®Вї Г¤Г® Г¶ВіГ«ГјГ®ГўГ®Вї ГЇГ®Г§ГЁГ¶ВіВї (ADS Г ГЎГ® Hip) ГІГ  Г§Г¬ВіГ­Г  FOV.
     /// </summary>
     void UpdateWeaponADS()
     {
@@ -248,7 +248,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Метод для виконання пострілу.
+    /// ГЊГҐГІГ®Г¤ Г¤Г«Гї ГўГЁГЄГ®Г­Г Г­Г­Гї ГЇГ®Г±ГІГ°ВіГ«Гі.
     /// </summary>
     void Shoot()
     {
@@ -267,7 +267,7 @@ public class WeaponController : MonoBehaviour
 
         if (bulletPrefab == null || bulletSpawnPoint == null)
         {
-            Debug.LogWarning("WeaponController: Bullet Prefab або Bullet Spawn Point не призначено.", this);
+            Debug.LogWarning("WeaponController: Bullet Prefab Г ГЎГ® Bullet Spawn Point Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г®.", this);
             return;
         }
 
@@ -291,7 +291,7 @@ public class WeaponController : MonoBehaviour
             shootDirection = bulletSpawnPoint.forward;
         }
 
-        // Застосовуємо розкид, враховуючи множник для ADS
+        // Г‡Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® Г°Г®Г§ГЄГЁГ¤, ГўГ°Г ГµГ®ГўГіГѕГ·ГЁ Г¬Г­Г®Г¦Г­ГЁГЄ Г¤Г«Гї ADS
         float currentSpread = bulletSpread;
         if (isAiming)
         {
@@ -307,7 +307,7 @@ public class WeaponController : MonoBehaviour
 
         Quaternion bulletRotation = Quaternion.LookRotation(shootDirection);
 
-        // Отримуємо кулю з пулу замість створення нової
+        // ГЋГІГ°ГЁГ¬ГіВєГ¬Г® ГЄГіГ«Гѕ Г§ ГЇГіГ«Гі Г§Г Г¬ВіГ±ГІГј Г±ГІГўГ®Г°ГҐГ­Г­Гї Г­Г®ГўГ®Вї
         GameObject bullet = null;
         if (BulletPool.Instance != null)
         {
@@ -315,14 +315,14 @@ public class WeaponController : MonoBehaviour
         }
         else
         {
-            // Fallback: створюємо кулю як раніше, якщо пул недоступний
-            Debug.LogWarning("WeaponController: BulletPool недоступний, використовується Instantiate.");
+            // Fallback: Г±ГІГўГ®Г°ГѕВєГ¬Г® ГЄГіГ«Гѕ ГїГЄ Г°Г Г­ВіГёГҐ, ГїГЄГ№Г® ГЇГіГ« Г­ГҐГ¤Г®Г±ГІГіГЇГ­ГЁГ©
+            Debug.LogWarning("WeaponController: BulletPool Г­ГҐГ¤Г®Г±ГІГіГЇГ­ГЁГ©, ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВєГІГјГ±Гї Instantiate.");
             bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletRotation);
         }
 
         if (bullet == null)
         {
-            Debug.LogWarning("WeaponController: Не вдалося отримати кулю (пул вичерпано?)");
+            Debug.LogWarning("WeaponController: ГЌГҐ ГўГ¤Г Г«Г®Г±Гї Г®ГІГ°ГЁГ¬Г ГІГЁ ГЄГіГ«Гѕ (ГЇГіГ« ГўГЁГ·ГҐГ°ГЇГ Г­Г®?)");
             return;
         } 
         
@@ -333,43 +333,43 @@ public class WeaponController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("WeaponController: На префабі кулі немає Rigidbody. Куля не буде рухатися з імпульсом.", bullet);
+            Debug.LogWarning("WeaponController: ГЌГ  ГЇГ°ГҐГґГ ГЎВі ГЄГіГ«Ві Г­ГҐГ¬Г Вє Rigidbody. ГЉГіГ«Гї Г­ГҐ ГЎГіГ¤ГҐ Г°ГіГµГ ГІГЁГ±Гї Г§ ВіГ¬ГЇГіГ«ГјГ±Г®Г¬.", bullet);
         }
 
-        ApplyRecoil(); // Застосовуємо віддачу після пострілу
+        ApplyRecoil(); // Г‡Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі ГЇВіГ±Г«Гї ГЇГ®Г±ГІГ°ВіГ«Гі
 
-        // Перевіряємо влучання для damage numbers (Claude покращення)
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г® ГўГ«ГіГ·Г Г­Г­Гї Г¤Г«Гї damage numbers (Claude ГЇГ®ГЄГ°Г Г№ГҐГ­Г­Гї)
         CheckForHitAndShowDamage(shootDirection);
 
-        // Відправляємо подію пострілу
+        // Г‚ВіГ¤ГЇГ°Г ГўГ«ГїВєГ¬Г® ГЇГ®Г¤ВіГѕ ГЇГ®Г±ГІГ°ВіГ«Гі
         Events.Trigger(new WeaponFiredEvent(weaponDisplayName, bulletSpawnPoint.position, shootDirection, currentAmmo, bullet));
 
-        // Відправляємо подію зміни патронів
+        // Г‚ВіГ¤ГЇГ°Г ГўГ«ГїВєГ¬Г® ГЇГ®Г¤ВіГѕ Г§Г¬ВіГ­ГЁ ГЇГ ГІГ°Г®Г­ВіГў
         Events.Trigger(new AmmoChangedEvent(weaponDisplayName, currentAmmo, magazineSize, reloadCharges));
     }
 
     /// <summary>
-    /// Метод для початку перезарядки.
+    /// ГЊГҐГІГ®Г¤ Г¤Г«Гї ГЇГ®Г·Г ГІГЄГі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ.
     /// </summary>
     void Reload()
     {
-        // Перевіряємо, чи не повний магазин, чи не перезаряджаємося, і чи є перезарядки
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г®, Г·ГЁ Г­ГҐ ГЇГ®ГўГ­ГЁГ© Г¬Г ГЈГ Г§ГЁГ­, Г·ГЁ Г­ГҐ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ВєГ¬Г®Г±Гї, Ві Г·ГЁ Вє ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ
         if (currentAmmo == magazineSize || isReloading || reloadCharges <= 0)
         {
-            if (reloadCharges <= 0) Debug.Log($"Неможливо перезарядити {weaponDisplayName}: немає перезарядок.");
+            if (reloadCharges <= 0) Debug.Log($"ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЁГІГЁ {weaponDisplayName}: Г­ГҐГ¬Г Вє ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г®ГЄ.");
             return;
         }
 
         isReloading = true;
-        reloadCharges--; // Витрачаємо одну перезарядку
-        if (isAiming) ResetADS(); // Виходимо з режиму прицілювання при перезарядці
-        // Скидаємо віддачу при перезарядці
+        reloadCharges--; // Г‚ГЁГІГ°Г Г·Г ВєГ¬Г® Г®Г¤Г­Гі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі
+        if (isAiming) ResetADS(); // Г‚ГЁГµГ®Г¤ГЁГ¬Г® Г§ Г°ГҐГ¦ГЁГ¬Гі ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї ГЇГ°ГЁ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¶Ві
+        // Г‘ГЄГЁГ¤Г ВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі ГЇГ°ГЁ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¶Ві
         targetRecoilRotation = Vector3.zero;
         currentRecoilRotation = Vector3.zero;
         
         Debug.Log($"Reloading {weaponDisplayName}... Reload charges left: {reloadCharges}");
 
-        // Відправляємо подію початку перезарядки
+        // Г‚ВіГ¤ГЇГ°Г ГўГ«ГїВєГ¬Г® ГЇГ®Г¤ВіГѕ ГЇГ®Г·Г ГІГЄГі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ
         Events.Trigger(new WeaponReloadStartedEvent(weaponDisplayName, reloadTime, reloadCharges));
 
         if (audioSource != null && reloadSoundClip != null)
@@ -377,7 +377,7 @@ public class WeaponController : MonoBehaviour
             audioSource.PlayOneShot(reloadSoundClip);
         }
 
-        // Безпечно запускаємо корутину перезарядки
+        // ГЃГҐГ§ГЇГҐГ·Г­Г® Г§Г ГЇГіГ±ГЄГ ВєГ¬Г® ГЄГ®Г°ГіГІГЁГ­Гі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ
         if (reloadCoroutine != null)
         {
             StopCoroutine(reloadCoroutine);
@@ -386,7 +386,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Корутина, яка виконує затримку перезарядки.
+    /// ГЉГ®Г°ГіГІГЁГ­Г , ГїГЄГ  ГўГЁГЄГ®Г­ГіВє Г§Г ГІГ°ГЁГ¬ГЄГі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ.
     /// </summary>
     IEnumerator ReloadCoroutine()
     {
@@ -394,51 +394,51 @@ public class WeaponController : MonoBehaviour
 
         currentAmmo = magazineSize;
         isReloading = false;
-        reloadCoroutine = null; // Очищуємо посилання після завершення
+        reloadCoroutine = null; // ГЋГ·ГЁГ№ГіВєГ¬Г® ГЇГ®Г±ГЁГ«Г Г­Г­Гї ГЇВіГ±Г«Гї Г§Г ГўГҐГ°ГёГҐГ­Г­Гї
         Debug.Log($"{weaponDisplayName} reloaded! Current ammo: {currentAmmo}");
 
-        // Відправляємо події завершення перезарядки
+        // Г‚ВіГ¤ГЇГ°Г ГўГ«ГїВєГ¬Г® ГЇГ®Г¤ВіВї Г§Г ГўГҐГ°ГёГҐГ­Г­Гї ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ
         Events.Trigger(new WeaponReloadCompletedEvent(weaponDisplayName, currentAmmo));
         Events.Trigger(new AmmoChangedEvent(weaponDisplayName, currentAmmo, magazineSize, reloadCharges));
     }
 
     /// <summary>
-    /// Валідація параметрів в Unity Editor
+    /// Г‚Г Г«ВіГ¤Г Г¶ВіГї ГЇГ Г°Г Г¬ГҐГІГ°ВіГў Гў Unity Editor
     /// </summary>
     void OnValidate()
     {
-        // Валідуємо зброю
+        // Г‚Г Г«ВіГ¤ГіВєГ¬Г® Г§ГЎГ°Г®Гѕ
         fireRate = Mathf.Max(0.1f, fireRate);
         bulletForce = Mathf.Max(1f, bulletForce);
         bulletSpread = Mathf.Max(0f, bulletSpread);
         maxAimDistance = Mathf.Max(1f, maxAimDistance);
 
-        // Валідуємо магазин та перезарядку
+        // Г‚Г Г«ВіГ¤ГіВєГ¬Г® Г¬Г ГЈГ Г§ГЁГ­ ГІГ  ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі
         magazineSize = ValidationHelper.ValidateMagazineSize(magazineSize);
         reloadTime = Mathf.Max(0.1f, reloadTime);
         reloadCharges = Mathf.Max(0, reloadCharges);
 
-        // Валідуємо ADS
+        // Г‚Г Г«ВіГ¤ГіВєГ¬Г® ADS
         aimSpeed = Mathf.Max(0.1f, aimSpeed);
         aimFOV = Mathf.Clamp(aimFOV, 10f, 120f);
         aimSpreadMultiplier = Mathf.Max(0f, aimSpreadMultiplier);
 
-        // Валідуємо віддачу
+        // Г‚Г Г«ВіГ¤ГіВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі
         recoilAmount = Mathf.Max(0f, recoilAmount);
         recoilSpeed = Mathf.Max(0.1f, recoilSpeed);
         recoilReturnSpeed = Mathf.Max(0.1f, recoilReturnSpeed);
 
-        // Заміняємо магічні числа константами
+        // Г‡Г Г¬ВіГ­ГїВєГ¬Г® Г¬Г ГЈВіГ·Г­Ві Г·ГЁГ±Г«Г  ГЄГ®Г­Г±ГІГ Г­ГІГ Г¬ГЁ
         if (maxAimDistance == 500f)
             maxAimDistance = GameConstants.DEFAULT_MAX_AIM_DISTANCE;
     }
 
     // ================================
-    // МЕТОДИ ДЛЯ COMMAND PATTERN
+    // ГЊГ…Г’ГЋГ„Г€ Г„Г‹Гџ COMMAND PATTERN
     // ================================
 
     /// <summary>
-    /// Перевіряє, чи можна стріляти (для Command Pattern)
+    /// ГЏГҐГ°ГҐГўВіГ°ГїВє, Г·ГЁ Г¬Г®Г¦Г­Г  Г±ГІГ°ВіГ«ГїГІГЁ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool CanFire()
     {
@@ -446,7 +446,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Виконує постріл (для Command Pattern)
+    /// Г‚ГЁГЄГ®Г­ГіВє ГЇГ®Г±ГІГ°ВіГ« (Г¤Г«Гї Command Pattern)
     /// </summary>
     public void Fire()
     {
@@ -457,7 +457,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Перевіряє, чи можна перезаряджати (для Command Pattern)
+    /// ГЏГҐГ°ГҐГўВіГ°ГїВє, Г·ГЁ Г¬Г®Г¦Г­Г  ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ГІГЁ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool CanReload()
     {
@@ -465,7 +465,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Починає перезарядку (для Command Pattern)
+    /// ГЏГ®Г·ГЁГ­Г Вє ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі (Г¤Г«Гї Command Pattern)
     /// </summary>
     public void StartReload()
     {
@@ -476,7 +476,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Починає прицілювання (для Command Pattern)
+    /// ГЏГ®Г·ГЁГ­Г Вє ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї (Г¤Г«Гї Command Pattern)
     /// </summary>
     public void StartAiming()
     {
@@ -488,7 +488,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Зупиняє прицілювання (для Command Pattern)
+    /// Г‡ГіГЇГЁГ­ГїВє ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї (Г¤Г«Гї Command Pattern)
     /// </summary>
     public void StopAiming()
     {
@@ -500,7 +500,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Перемикає режим прицілювання (для Command Pattern)
+    /// ГЏГҐГ°ГҐГ¬ГЁГЄГ Вє Г°ГҐГ¦ГЁГ¬ ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї (Г¤Г«Гї Command Pattern)
     /// </summary>
     public void ToggleAiming()
     {
@@ -515,7 +515,7 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Застосовує віддачу до огляду гравця.
+    /// Г‡Г Г±ГІГ®Г±Г®ГўГіВє ГўВіГ¤Г¤Г Г·Гі Г¤Г® Г®ГЈГ«ГїГ¤Гі ГЈГ°Г ГўГ¶Гї.
     /// </summary>
     void ApplyRecoil()
     {
@@ -536,67 +536,67 @@ public class WeaponController : MonoBehaviour
     }
 
     /// <summary>
-    /// Оновлює стан віддачі, плавно переміщуючи камеру до цільового обертання.
+    /// ГЋГ­Г®ГўГ«ГѕВє Г±ГІГ Г­ ГўВіГ¤Г¤Г Г·Ві, ГЇГ«Г ГўГ­Г® ГЇГҐГ°ГҐГ¬ВіГ№ГіГѕГ·ГЁ ГЄГ Г¬ГҐГ°Гі Г¤Г® Г¶ВіГ«ГјГ®ГўГ®ГЈГ® Г®ГЎГҐГ°ГІГ Г­Г­Гї.
     /// </summary>
     void UpdateRecoil()
     {
         if (mouseLook == null) return;
 
-        // Зберігаємо попередню віддачу для обчислення різниці
+        // Г‡ГЎГҐГ°ВіГЈГ ВєГ¬Г® ГЇГ®ГЇГҐГ°ГҐГ¤Г­Гѕ ГўВіГ¤Г¤Г Г·Гі Г¤Г«Гї Г®ГЎГ·ГЁГ±Г«ГҐГ­Г­Гї Г°ВіГ§Г­ГЁГ¶Ві
         Vector3 previousRecoil = currentRecoilRotation;
         
         currentRecoilRotation = Vector3.Lerp(currentRecoilRotation, targetRecoilRotation, Time.deltaTime * recoilSnappiness);
         targetRecoilRotation = Vector3.Lerp(targetRecoilRotation, Vector3.zero, Time.deltaTime * recoilReturnSpeed);
         
-        // SCOUT ВИПРАВЛЕННЯ: Застосовуємо різницю віддачі до MouseLook
+        // SCOUT Г‚Г€ГЏГђГЂГ‚Г‹Г…ГЌГЌГџ: Г‡Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® Г°ВіГ§Г­ГЁГ¶Гѕ ГўВіГ¤Г¤Г Г·Ві Г¤Г® MouseLook
         Vector3 recoilDelta = currentRecoilRotation - previousRecoil;
-        if (recoilDelta.magnitude > 0.001f) // Уникаємо мікроскопічних змін
+        if (recoilDelta.magnitude > 0.001f) // Г“Г­ГЁГЄГ ВєГ¬Г® Г¬ВіГЄГ°Г®Г±ГЄГ®ГЇВіГ·Г­ГЁГµ Г§Г¬ВіГ­
         {
             mouseLook.ApplyRecoil(recoilDelta.x, recoilDelta.y);
         }
     }
 
     /// <summary>
-    /// Генерує віддачу при пострілі (SCOUT ВИПРАВЛЕННЯ)
+    /// ГѓГҐГ­ГҐГ°ГіВє ГўВіГ¤Г¤Г Г·Гі ГЇГ°ГЁ ГЇГ®Г±ГІГ°ВіГ«Ві (SCOUT Г‚Г€ГЏГђГЂГ‚Г‹Г…ГЌГЌГџ)
     /// </summary>
     void ApplyRecoil()
     {
-        // Обчислюємо силу віддачі з урахуванням прицілювання
+        // ГЋГЎГ·ГЁГ±Г«ГѕВєГ¬Г® Г±ГЁГ«Гі ГўВіГ¤Г¤Г Г·Ві Г§ ГіГ°Г ГµГіГўГ Г­Г­ГїГ¬ ГЇГ°ГЁГ¶ВіГ«ГѕГўГ Г­Г­Гї
         float recoilMultiplier = isAiming ? aimRecoilMultiplier : 1f;
         
-        // Додаємо випадковість до віддачі
+        // Г„Г®Г¤Г ВєГ¬Г® ГўГЁГЇГ Г¤ГЄГ®ГўВіГ±ГІГј Г¤Г® ГўВіГ¤Г¤Г Г·Ві
         float randomRecoilX = recoilX * recoilMultiplier * Random.Range(0.8f, 1.2f);
         float randomRecoilY = recoilY * recoilMultiplier * Random.Range(-1f, 1f);
         
-        // Додаємо віддачу до цільового значення
+        // Г„Г®Г¤Г ВєГ¬Г® ГўВіГ¤Г¤Г Г·Гі Г¤Г® Г¶ВіГ«ГјГ®ГўГ®ГЈГ® Г§Г­Г Г·ГҐГ­Г­Гї
         targetRecoilRotation += new Vector3(randomRecoilX, randomRecoilY, 0f);
         
-        Debug.Log($"WeaponController: Віддача застосована - X:{randomRecoilX:F2}, Y:{randomRecoilY:F2}");
+        Debug.Log($"WeaponController: Г‚ВіГ¤Г¤Г Г·Г  Г§Г Г±ГІГ®Г±Г®ГўГ Г­Г  - X:{randomRecoilX:F2}, Y:{randomRecoilY:F2}");
     }
 
     /// <summary>
-    /// Перевіряє влучання та показує damage numbers (Claude покращення)
+    /// ГЏГҐГ°ГҐГўВіГ°ГїВє ГўГ«ГіГ·Г Г­Г­Гї ГІГ  ГЇГ®ГЄГ Г§ГіВє damage numbers (Claude ГЇГ®ГЄГ°Г Г№ГҐГ­Г­Гї)
     /// </summary>
     void CheckForHitAndShowDamage(Vector3 shootDirection)
     {
         if (mainCamera == null) return;
         
-        // Виконуємо raycast для виявлення влучань
+        // Г‚ГЁГЄГ®Г­ГіВєГ¬Г® raycast Г¤Г«Гї ГўГЁГїГўГ«ГҐГ­Г­Гї ГўГ«ГіГ·Г Г­Гј
         Ray ray = new Ray(bulletSpawnPoint.position, shootDirection);
         RaycastHit hit;
         
         if (Physics.Raycast(ray, out hit, maxAimDistance))
         {
-            // Перевіряємо, чи влучили у ворога
+            // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г®, Г·ГЁ ГўГ«ГіГ·ГЁГ«ГЁ Гі ГўГ®Г°Г®ГЈГ 
             Enemy enemy = hit.collider.GetComponent<Enemy>();
             if (enemy != null)
             {
-                // Обчислюємо урон
+                // ГЋГЎГ·ГЁГ±Г«ГѕВєГ¬Г® ГіГ°Г®Г­
                 float baseDamage = GetWeaponDamage();
                 bool isHeadshot = IsHeadshot(hit);
                 float finalDamage = isHeadshot ? baseDamage * 2f : baseDamage;
                 
-                // Показуємо damage number
+                // ГЏГ®ГЄГ Г§ГіВєГ¬Г® damage number
                 if (DamageNumbersManager.Instance != null)
                 {
                     Vector3 damagePosition = hit.point + Vector3.up * 0.5f;
@@ -604,50 +604,50 @@ public class WeaponController : MonoBehaviour
                     DamageNumbersManager.Instance.ShowDamageNumber(damagePosition, finalDamage, isHeadshot, damageType);
                 }
                 
-                // Застосовуємо урон до ворога
+                // Г‡Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® ГіГ°Г®Г­ Г¤Г® ГўГ®Г°Г®ГЈГ 
                 enemy.TakeDamage(finalDamage, hit.point, hit.normal);
                 
-                Debug.Log($"WeaponController: Влучання! Урон: {finalDamage}, Headshot: {isHeadshot}");
+                Debug.Log($"WeaponController: Г‚Г«ГіГ·Г Г­Г­Гї! Г“Г°Г®Г­: {finalDamage}, Headshot: {isHeadshot}");
             }
             else
             {
-                // Влучили в оточення - можна додати ефекти пострілу
+                // Г‚Г«ГіГ·ГЁГ«ГЁ Гў Г®ГІГ®Г·ГҐГ­Г­Гї - Г¬Г®Г¦Г­Г  Г¤Г®Г¤Г ГІГЁ ГҐГґГҐГЄГІГЁ ГЇГ®Г±ГІГ°ВіГ«Гі
                 CreateHitEffect(hit.point, hit.normal);
             }
         }
     }
     
     /// <summary>
-    /// Визначає, чи є влучання хедшотом
+    /// Г‚ГЁГ§Г­Г Г·Г Вє, Г·ГЁ Вє ГўГ«ГіГ·Г Г­Г­Гї ГµГҐГ¤ГёГ®ГІГ®Г¬
     /// </summary>
     bool IsHeadshot(RaycastHit hit)
     {
-        // Перевіряємо тег або назву колайдера
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г® ГІГҐГЈ Г ГЎГ® Г­Г Г§ГўГі ГЄГ®Г«Г Г©Г¤ГҐГ°Г 
         return hit.collider.CompareTag("Head") || hit.collider.name.ToLower().Contains("head");
     }
     
     /// <summary>
-    /// Повертає урон зброї (можна розширити для різних типів зброї)
+    /// ГЏГ®ГўГҐГ°ГІГ Вє ГіГ°Г®Г­ Г§ГЎГ°Г®Вї (Г¬Г®Г¦Г­Г  Г°Г®Г§ГёГЁГ°ГЁГІГЁ Г¤Г«Гї Г°ВіГ§Г­ГЁГµ ГІГЁГЇВіГў Г§ГЎГ°Г®Вї)
     /// </summary>
     float GetWeaponDamage()
     {
-        // Базовий урон залежно від типу зброї
-        // Можна розширити через ScriptableObject конфігурації
-        return 25f; // Базовий урон
+        // ГЃГ Г§Г®ГўГЁГ© ГіГ°Г®Г­ Г§Г Г«ГҐГ¦Г­Г® ГўВіГ¤ ГІГЁГЇГі Г§ГЎГ°Г®Вї
+        // ГЊГ®Г¦Г­Г  Г°Г®Г§ГёГЁГ°ГЁГІГЁ Г·ГҐГ°ГҐГ§ ScriptableObject ГЄГ®Г­ГґВіГЈГіГ°Г Г¶ВіВї
+        return 25f; // ГЃГ Г§Г®ГўГЁГ© ГіГ°Г®Г­
     }
     
     /// <summary>
-    /// Створює ефект влучання в оточення
+    /// Г‘ГІГўГ®Г°ГѕВє ГҐГґГҐГЄГІ ГўГ«ГіГ·Г Г­Г­Гї Гў Г®ГІГ®Г·ГҐГ­Г­Гї
     /// </summary>
     void CreateHitEffect(Vector3 position, Vector3 normal)
     {
-        // Тут можна додати ефекти іскор, пилу тощо
-        // Поки що просто логуємо
-        Debug.Log($"WeaponController: Влучання в оточення на позиції {position}");
+        // Г’ГіГІ Г¬Г®Г¦Г­Г  Г¤Г®Г¤Г ГІГЁ ГҐГґГҐГЄГІГЁ ВіГ±ГЄГ®Г°, ГЇГЁГ«Гі ГІГ®Г№Г®
+        // ГЏГ®ГЄГЁ Г№Г® ГЇГ°Г®Г±ГІГ® Г«Г®ГЈГіВєГ¬Г®
+        Debug.Log($"WeaponController: Г‚Г«ГіГ·Г Г­Г­Гї Гў Г®ГІГ®Г·ГҐГ­Г­Гї Г­Г  ГЇГ®Г§ГЁГ¶ВіВї {position}");
     }
     
     /// <summary>
-    /// Повертає зброю та FOV камери до стандартного стану.
+    /// ГЏГ®ГўГҐГ°ГІГ Вє Г§ГЎГ°Г®Гѕ ГІГ  FOV ГЄГ Г¬ГҐГ°ГЁ Г¤Г® Г±ГІГ Г­Г¤Г Г°ГІГ­Г®ГЈГ® Г±ГІГ Г­Гі.
     /// </summary>
     void ResetADS()
     {
@@ -657,7 +657,7 @@ public class WeaponController : MonoBehaviour
     }
 
 
-    // --- Публічні методи для UI або інших скриптів ---
+    // --- ГЏГіГЎГ«ВіГ·Г­Ві Г¬ГҐГІГ®Г¤ГЁ Г¤Г«Гї UI Г ГЎГ® ВіГ­ГёГЁГµ Г±ГЄГ°ГЁГЇГІВіГў ---
     public int GetCurrentAmmo()
     {
         return currentAmmo;
@@ -683,7 +683,7 @@ public class WeaponController : MonoBehaviour
         return currentRecoilRotation;
     }
 
-    // НОВІ ПУБЛІЧНІ МЕТОДИ ДЛЯ ПІДБОРУ/ВИКИДАННЯ
+    // ГЌГЋГ‚ВІ ГЏГ“ГЃГ‹ВІГ—ГЌВІ ГЊГ…Г’ГЋГ„Г€ Г„Г‹Гџ ГЏВІГ„ГЃГЋГђГ“/Г‚Г€ГЉГ€Г„ГЂГЌГЌГџ
     public bool IsDroppable()
     {
         return isDroppable;
@@ -704,7 +704,7 @@ public class WeaponController : MonoBehaviour
         return weaponIcon;
     }
 
-    // НОВІ ПУБЛІЧНІ МЕТОДИ ДЛЯ СИСТЕМИ ПЕРЕЗАРЯДКИ
+    // ГЌГЋГ‚ВІ ГЏГ“ГЃГ‹ВІГ—ГЌВІ ГЊГ…Г’ГЋГ„Г€ Г„Г‹Гџ Г‘Г€Г‘Г’Г…ГЊГ€ ГЏГ…ГђГ…Г‡ГЂГђГџГ„ГЉГ€
     public int GetReloadCharges()
     {
         return reloadCharges;
@@ -717,27 +717,27 @@ public class WeaponController : MonoBehaviour
     }
 
 
-    // Методи, що викликаються WeaponSwitching при екіпіровці/знятті
+    // ГЊГҐГІГ®Г¤ГЁ, Г№Г® ГўГЁГЄГ«ГЁГЄГ ГѕГІГјГ±Гї WeaponSwitching ГЇГ°ГЁ ГҐГЄВіГЇВіГ°Г®ГўГ¶Ві/Г§Г­ГїГІГІВі
     public void OnEquip()
     {
-        // Скидаємо всі стани при екіпіровці
-        // currentAmmo = magazineSize; // Замість цього, патрони будуть зберігатися між екіпіровками.
-                                     // Якщо ви хочете повний магазин при кожній екіпіровці, розкоментуйте.
+        // Г‘ГЄГЁГ¤Г ВєГ¬Г® ГўГ±Ві Г±ГІГ Г­ГЁ ГЇГ°ГЁ ГҐГЄВіГЇВіГ°Г®ГўГ¶Ві
+        // currentAmmo = magazineSize; // Г‡Г Г¬ВіГ±ГІГј Г¶ГјГ®ГЈГ®, ГЇГ ГІГ°Г®Г­ГЁ ГЎГіГ¤ГіГІГј Г§ГЎГҐГ°ВіГЈГ ГІГЁГ±Гї Г¬ВіГ¦ ГҐГЄВіГЇВіГ°Г®ГўГЄГ Г¬ГЁ.
+                                     // ГџГЄГ№Г® ГўГЁ ГµГ®Г·ГҐГІГҐ ГЇГ®ГўГ­ГЁГ© Г¬Г ГЈГ Г§ГЁГ­ ГЇГ°ГЁ ГЄГ®Г¦Г­ВіГ© ГҐГЄВіГЇВіГ°Г®ГўГ¶Ві, Г°Г®Г§ГЄГ®Г¬ГҐГ­ГІГіГ©ГІГҐ.
         isReloading = false;
-        ResetADS(); // Виходимо з ADS
+        ResetADS(); // Г‚ГЁГµГ®Г¤ГЁГ¬Г® Г§ ADS
         targetRecoilRotation = Vector3.zero;
         currentRecoilRotation = Vector3.zero;
-        StopAllCoroutines(); // Зупиняємо будь-які корутини (наприклад, перезарядку)
+        StopAllCoroutines(); // Г‡ГіГЇГЁГ­ГїВєГ¬Г® ГЎГіГ¤Гј-ГїГЄВі ГЄГ®Г°ГіГІГЁГ­ГЁ (Г­Г ГЇГ°ГЁГЄГ«Г Г¤, ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі)
         
         Debug.Log($"{weaponDisplayName} Equipped.");
     }
 
     public void OnUnequip()
     {
-        ResetADS(); // Виходимо з ADS
+        ResetADS(); // Г‚ГЁГµГ®Г¤ГЁГ¬Г® Г§ ADS
         targetRecoilRotation = Vector3.zero;
         currentRecoilRotation = Vector3.zero;
-        StopAllCoroutines(); // Зупиняємо будь-які поточні корутини (наприклад, перезарядку)
+        StopAllCoroutines(); // Г‡ГіГЇГЁГ­ГїВєГ¬Г® ГЎГіГ¤Гј-ГїГЄВі ГЇГ®ГІГ®Г·Г­Ві ГЄГ®Г°ГіГІГЁГ­ГЁ (Г­Г ГЇГ°ГЁГЄГ«Г Г¤, ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі)
         
         Debug.Log($"{weaponDisplayName} Unequipped.");
     }

@@ -3,35 +3,35 @@ using UnityEngine;
 public class WeaponSwitching : MonoBehaviour
 {
     [Header("Weapon Slots")]
-    [Tooltip("Масив слотів зброї, які гравець може носити. Ці GameObject'и вже знаходяться в сцені (дочірні до WeaponHolder)")]
+    [Tooltip("ГЊГ Г±ГЁГў Г±Г«Г®ГІВіГў Г§ГЎГ°Г®Вї, ГїГЄВі ГЈГ°Г ГўГҐГ¶Гј Г¬Г®Г¦ГҐ Г­Г®Г±ГЁГІГЁ. Г–Ві GameObject'ГЁ ГўГ¦ГҐ Г§Г­Г ГµГ®Г¤ГїГІГјГ±Гї Гў Г±Г¶ГҐГ­Ві (Г¤Г®Г·ВіГ°Г­Ві Г¤Г® WeaponHolder)")]
     public GameObject[] weaponSlots;
-    [Tooltip("Масив префабів зброї 'в руках'. Порядок має відповідати порядку слотів (для підбирання)")]
-    public GameObject[] weaponPrefabs; // Префаби для зброї в руках
+    [Tooltip("ГЊГ Г±ГЁГў ГЇГ°ГҐГґГ ГЎВіГў Г§ГЎГ°Г®Вї 'Гў Г°ГіГЄГ Гµ'. ГЏГ®Г°ГїГ¤Г®ГЄ Г¬Г Вє ГўВіГ¤ГЇГ®ГўВіГ¤Г ГІГЁ ГЇГ®Г°ГїГ¤ГЄГі Г±Г«Г®ГІВіГў (Г¤Г«Гї ГЇВіГ¤ГЎГЁГ°Г Г­Г­Гї)")]
+    public GameObject[] weaponPrefabs; // ГЏГ°ГҐГґГ ГЎГЁ Г¤Г«Гї Г§ГЎГ°Г®Вї Гў Г°ГіГЄГ Гµ
 
-    [Tooltip("Початковий слот, який буде активований при старті гри (0 - перший слот).")]
+    [Tooltip("ГЏГ®Г·Г ГІГЄГ®ГўГЁГ© Г±Г«Г®ГІ, ГїГЄГЁГ© ГЎГіГ¤ГҐ Г ГЄГІГЁГўГ®ГўГ Г­ГЁГ© ГЇГ°ГЁ Г±ГІГ Г°ГІВі ГЈГ°ГЁ (0 - ГЇГҐГ°ГёГЁГ© Г±Г«Г®ГІ).")]
     [Range(0, 9)]
     public int startingWeaponIndex = 0;
 
     [Header("Switching Settings")]
-    [Tooltip("Чи можна перемикатися на наступну/попередню зброю колесом миші?")]
+    [Tooltip("Г—ГЁ Г¬Г®Г¦Г­Г  ГЇГҐГ°ГҐГ¬ГЁГЄГ ГІГЁГ±Гї Г­Г  Г­Г Г±ГІГіГЇГ­Гі/ГЇГ®ГЇГҐГ°ГҐГ¤Г­Гѕ Г§ГЎГ°Г®Гѕ ГЄГ®Г«ГҐГ±Г®Г¬ Г¬ГЁГёВі?")]
     public bool useMouseScroll = true;
-    [Tooltip("Чи можна перемикатися на зброю за номерами клавіш (1, 2, 3...)?")]
+    [Tooltip("Г—ГЁ Г¬Г®Г¦Г­Г  ГЇГҐГ°ГҐГ¬ГЁГЄГ ГІГЁГ±Гї Г­Г  Г§ГЎГ°Г®Гѕ Г§Г  Г­Г®Г¬ГҐГ°Г Г¬ГЁ ГЄГ«Г ГўВіГё (1, 2, 3...)?")]
     public bool useNumberKeys = true;
-    [Tooltip("Час (у секундах), який потрібно чекати між перемиканнями зброї.")]
+    [Tooltip("Г—Г Г± (Гі Г±ГҐГЄГіГ­Г¤Г Гµ), ГїГЄГЁГ© ГЇГ®ГІГ°ВіГЎГ­Г® Г·ГҐГЄГ ГІГЁ Г¬ВіГ¦ ГЇГҐГ°ГҐГ¬ГЁГЄГ Г­Г­ГїГ¬ГЁ Г§ГЎГ°Г®Вї.")]
     public float switchCooldown = 0.5f;
 
-    [Tooltip("Індекс слоту, який відповідає 'рукам порожнім' або 'без зброї'. Встановіть -1, якщо такої опції немає.")]
+    [Tooltip("ВІГ­Г¤ГҐГЄГ± Г±Г«Г®ГІГі, ГїГЄГЁГ© ГўВіГ¤ГЇГ®ГўВіГ¤Г Вє 'Г°ГіГЄГ Г¬ ГЇГ®Г°Г®Г¦Г­ВіГ¬' Г ГЎГ® 'ГЎГҐГ§ Г§ГЎГ°Г®Вї'. Г‚Г±ГІГ Г­Г®ГўВіГІГј -1, ГїГЄГ№Г® ГІГ ГЄГ®Вї Г®ГЇГ¶ВіВї Г­ГҐГ¬Г Вє.")]
     public int emptyHandsSlotIndex = -1;
 
     [Header("Drop Settings")]
-    [Tooltip("Кнопка для викидання поточної зброї.")]
+    [Tooltip("ГЉГ­Г®ГЇГЄГ  Г¤Г«Гї ГўГЁГЄГЁГ¤Г Г­Г­Гї ГЇГ®ГІГ®Г·Г­Г®Вї Г§ГЎГ°Г®Вї.")]
     public KeyCode dropKey = KeyCode.G;
-    [Tooltip("Точка, з якої зброя буде викидатися (зазвичай біля гравця).")]
+    [Tooltip("Г’Г®Г·ГЄГ , Г§ ГїГЄГ®Вї Г§ГЎГ°Г®Гї ГЎГіГ¤ГҐ ГўГЁГЄГЁГ¤Г ГІГЁГ±Гї (Г§Г Г§ГўГЁГ·Г Г© ГЎВіГ«Гї ГЈГ°Г ГўГ¶Гї).")]
     public Transform dropSpawnPoint;
-    [Tooltip("Сила, з якою зброя буде викидатися.")]
+    [Tooltip("Г‘ГЁГ«Г , Г§ ГїГЄГ®Гѕ Г§ГЎГ°Г®Гї ГЎГіГ¤ГҐ ГўГЁГЄГЁГ¤Г ГІГЁГ±Гї.")]
     public float dropForce = 5f;
 
-    // Приватні змінні
+    // ГЏГ°ГЁГўГ ГІГ­Ві Г§Г¬ВіГ­Г­Ві
     private int selectedWeapon;
     private float nextSwitchTime = 0f;
 
@@ -39,23 +39,23 @@ public class WeaponSwitching : MonoBehaviour
     {
         if (weaponSlots == null || weaponSlots.Length == 0)
         {
-            Debug.LogError("WeaponSwitching: Масив weaponSlots порожній або не призначений. Скрипт вимкнено.", this);
+            Debug.LogError("WeaponSwitching: ГЊГ Г±ГЁГў weaponSlots ГЇГ®Г°Г®Г¦Г­ВіГ© Г ГЎГ® Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­ГЁГ©. Г‘ГЄГ°ГЁГЇГІ ГўГЁГ¬ГЄГ­ГҐГ­Г®.", this);
             enabled = false;
             return;
         }
 
         if (weaponPrefabs == null || weaponPrefabs.Length != weaponSlots.Length)
         {
-            Debug.LogError("WeaponSwitching: Масив weaponPrefabs не призначений або його розмір не відповідає розміру weaponSlots. Підбирання зброї може працювати некоректно.", this);
+            Debug.LogError("WeaponSwitching: ГЊГ Г±ГЁГў weaponPrefabs Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­ГЁГ© Г ГЎГ® Г©Г®ГЈГ® Г°Г®Г§Г¬ВіГ° Г­ГҐ ГўВіГ¤ГЇГ®ГўВіГ¤Г Вє Г°Г®Г§Г¬ВіГ°Гі weaponSlots. ГЏВіГ¤ГЎГЁГ°Г Г­Г­Гї Г§ГЎГ°Г®Вї Г¬Г®Г¦ГҐ ГЇГ°Г Г¶ГѕГўГ ГІГЁ Г­ГҐГЄГ®Г°ГҐГЄГІГ­Г®.", this);
         }
 
         if (dropSpawnPoint == null)
         {
-            Debug.LogWarning("WeaponSwitching: Drop Spawn Point не призначено. Викидання зброї може працювати некоректно.", this);
-            dropSpawnPoint = transform.parent; // Припускаємо, що це об'єкт гравця
+            Debug.LogWarning("WeaponSwitching: Drop Spawn Point Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г®. Г‚ГЁГЄГЁГ¤Г Г­Г­Гї Г§ГЎГ°Г®Вї Г¬Г®Г¦ГҐ ГЇГ°Г Г¶ГѕГўГ ГІГЁ Г­ГҐГЄГ®Г°ГҐГЄГІГ­Г®.", this);
+            dropSpawnPoint = transform.parent; // ГЏГ°ГЁГЇГіГ±ГЄГ ВєГ¬Г®, Г№Г® Г¶ГҐ Г®ГЎ'ВєГЄГІ ГЈГ°Г ГўГ¶Гї
         }
         
-        // Ініціалізуємо першу зброю
+        // ВІГ­ВіГ¶ВіГ Г«ВіГ§ГіВєГ¬Г® ГЇГҐГ°ГёГі Г§ГЎГ°Г®Гѕ
         selectedWeapon = startingWeaponIndex;
         if (selectedWeapon < 0 || selectedWeapon >= weaponSlots.Length)
         {
@@ -69,11 +69,11 @@ public class WeaponSwitching : MonoBehaviour
     {
         int previousSelectedWeapon = selectedWeapon;
 
-        // --- Викинути зброю ---
+        // --- Г‚ГЁГЄГЁГ­ГіГІГЁ Г§ГЎГ°Г®Гѕ ---
         if (Input.GetKeyDown(dropKey))
         {
             DropCurrentWeapon();
-            return; // Виходимо з Update, щоб не обробляти інші інпути
+            return; // Г‚ГЁГµГ®Г¤ГЁГ¬Г® Г§ Update, Г№Г®ГЎ Г­ГҐ Г®ГЎГ°Г®ГЎГ«ГїГІГЁ ВіГ­ГёВі ВіГ­ГЇГіГІГЁ
         }
 
         if (Time.time < nextSwitchTime)
@@ -81,20 +81,20 @@ public class WeaponSwitching : MonoBehaviour
             return;
         }
 
-        // --- Перемикання колесом миші ---
+        // --- ГЏГҐГ°ГҐГ¬ГЁГЄГ Г­Г­Гї ГЄГ®Г«ГҐГ±Г®Г¬ Г¬ГЁГёВі ---
         if (useMouseScroll)
         {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0f) // Прокрутка вгору
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f) // ГЏГ°Г®ГЄГ°ГіГІГЄГ  ГўГЈГ®Г°Гі
             {
                 selectedWeapon = (selectedWeapon + 1) % weaponSlots.Length;
             }
-            if (Input.GetAxis("Mouse ScrollWheel") < 0f) // Прокрутка вниз
+            if (Input.GetAxis("Mouse ScrollWheel") < 0f) // ГЏГ°Г®ГЄГ°ГіГІГЄГ  ГўГ­ГЁГ§
             {
                 selectedWeapon = (selectedWeapon - 1 + weaponSlots.Length) % weaponSlots.Length;
             }
         }
 
-        // --- Перемикання за номерами клавіш ---
+        // --- ГЏГҐГ°ГҐГ¬ГЁГЄГ Г­Г­Гї Г§Г  Г­Г®Г¬ГҐГ°Г Г¬ГЁ ГЄГ«Г ГўВіГё ---
         if (useNumberKeys)
         {
             for (int i = 0; i < weaponSlots.Length; i++)
@@ -107,8 +107,8 @@ public class WeaponSwitching : MonoBehaviour
             }
         }
 
-        // --- Клавіша для "покласти зброю" / "руки порожні" ---
-        if (emptyHandsSlotIndex != -1 && Input.GetKeyDown(KeyCode.H)) // Приклад: клавіша H для ховання зброї
+        // --- ГЉГ«Г ГўВіГёГ  Г¤Г«Гї "ГЇГ®ГЄГ«Г Г±ГІГЁ Г§ГЎГ°Г®Гѕ" / "Г°ГіГЄГЁ ГЇГ®Г°Г®Г¦Г­Ві" ---
+        if (emptyHandsSlotIndex != -1 && Input.GetKeyDown(KeyCode.H)) // ГЏГ°ГЁГЄГ«Г Г¤: ГЄГ«Г ГўВіГёГ  H Г¤Г«Гї ГµГ®ГўГ Г­Г­Гї Г§ГЎГ°Г®Вї
         {
              if (selectedWeapon == emptyHandsSlotIndex)
              {
@@ -129,13 +129,13 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Активовує зброю в обраному слоті та деактивує інші.
+    /// ГЂГЄГІГЁГўГ®ГўГіВє Г§ГЎГ°Г®Гѕ Гў Г®ГЎГ°Г Г­Г®Г¬Гі Г±Г«Г®ГІВі ГІГ  Г¤ГҐГ ГЄГІГЁГўГіВє ВіГ­ГёВі.
     /// </summary>
     void SelectWeapon(int index)
     {
         if (index < 0 || index >= weaponSlots.Length)
         {
-            Debug.LogWarning($"WeaponSwitching: Спроба вибрати неіснуючий слот зброї: {index}. Вибір не змінено.", this);
+            Debug.LogWarning($"WeaponSwitching: Г‘ГЇГ°Г®ГЎГ  ГўГЁГЎГ°Г ГІГЁ Г­ГҐВіГ±Г­ГіГѕГ·ГЁГ© Г±Г«Г®ГІ Г§ГЎГ°Г®Вї: {index}. Г‚ГЁГЎВіГ° Г­ГҐ Г§Г¬ВіГ­ГҐГ­Г®.", this);
             return;
         }
 
@@ -151,12 +151,12 @@ public class WeaponSwitching : MonoBehaviour
         {
             weaponSlots[index].SetActive(true);
             selectedWeapon = index;
-            Debug.Log($"WeaponSwitched: Активовано зброю в слоті {selectedWeapon} ({weaponSlots[selectedWeapon].name}).");
+            Debug.Log($"WeaponSwitched: ГЂГЄГІГЁГўГ®ГўГ Г­Г® Г§ГЎГ°Г®Гѕ Гў Г±Г«Г®ГІВі {selectedWeapon} ({weaponSlots[selectedWeapon].name}).");
         }
         else
         {
             selectedWeapon = index;
-            Debug.Log($"WeaponSwitched: Слот {index} порожній. Нічого не активовано.", this);
+            Debug.Log($"WeaponSwitched: Г‘Г«Г®ГІ {index} ГЇГ®Г°Г®Г¦Г­ВіГ©. ГЌВіГ·Г®ГЈГ® Г­ГҐ Г ГЄГІГЁГўГ®ГўГ Г­Г®.", this);
             if (emptyHandsSlotIndex != -1)
             {
                 SelectWeapon(emptyHandsSlotIndex);
@@ -165,28 +165,28 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Викидає поточну зброю.
+    /// Г‚ГЁГЄГЁГ¤Г Вє ГЇГ®ГІГ®Г·Г­Гі Г§ГЎГ°Г®Гѕ.
     /// </summary>
     void DropCurrentWeapon()
     {
         GameObject currentWeaponGO = GetCurrentWeaponGameObject();
         if (currentWeaponGO == null || selectedWeapon == emptyHandsSlotIndex)
         {
-            Debug.Log("Неможливо викинути: немає зброї або це слот порожніх рук.");
+            Debug.Log("ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГўГЁГЄГЁГ­ГіГІГЁ: Г­ГҐГ¬Г Вє Г§ГЎГ°Г®Вї Г ГЎГ® Г¶ГҐ Г±Г«Г®ГІ ГЇГ®Г°Г®Г¦Г­ВіГµ Г°ГіГЄ.");
             return;
         }
 
         WeaponController weaponController = currentWeaponGO.GetComponent<WeaponController>();
         if (weaponController == null || weaponController.weaponWorldPrefab == null)
         {
-            Debug.LogError($"Неможливо викинути {currentWeaponGO.name}: немає компонента WeaponController або не призначено weaponWorldPrefab.", this);
+            Debug.LogError($"ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГўГЁГЄГЁГ­ГіГІГЁ {currentWeaponGO.name}: Г­ГҐГ¬Г Вє ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІГ  WeaponController Г ГЎГ® Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г® weaponWorldPrefab.", this);
             return;
         }
 
-        // Спавним префаб викинутої зброї
+        // Г‘ГЇГ ГўГ­ГЁГ¬ ГЇГ°ГҐГґГ ГЎ ГўГЁГЄГЁГ­ГіГІГ®Вї Г§ГЎГ°Г®Вї
         GameObject droppedWeapon = Instantiate(weaponController.weaponWorldPrefab, dropSpawnPoint.position, dropSpawnPoint.rotation);
         
-        // Додаємо імпульс, щоб вона викидалася
+        // Г„Г®Г¤Г ВєГ¬Г® ВіГ¬ГЇГіГ«ГјГ±, Г№Г®ГЎ ГўГ®Г­Г  ГўГЁГЄГЁГ¤Г Г«Г Г±Гї
         Rigidbody droppedRb = droppedWeapon.GetComponent<Rigidbody>();
         if (droppedRb != null)
         {
@@ -194,14 +194,14 @@ public class WeaponSwitching : MonoBehaviour
             droppedRb.AddTorque(Random.insideUnitSphere * dropForce, ForceMode.Impulse);
         }
 
-        // Знищуємо GameObject поточної зброї в руках
+        // Г‡Г­ГЁГ№ГіВєГ¬Г® GameObject ГЇГ®ГІГ®Г·Г­Г®Вї Г§ГЎГ°Г®Вї Гў Г°ГіГЄГ Гµ
         Destroy(currentWeaponGO);
 
-        // "Прибираємо" зброю зі слота, встановлюючи його на null
+        // "ГЏГ°ГЁГЎГЁГ°Г ВєГ¬Г®" Г§ГЎГ°Г®Гѕ Г§Ві Г±Г«Г®ГІГ , ГўГ±ГІГ Г­Г®ГўГ«ГѕГѕГ·ГЁ Г©Г®ГЈГ® Г­Г  null
         weaponSlots[selectedWeapon] = null;
-        Debug.Log($"Зброя зі слота {selectedWeapon} викинута.");
+        Debug.Log($"Г‡ГЎГ°Г®Гї Г§Ві Г±Г«Г®ГІГ  {selectedWeapon} ГўГЁГЄГЁГ­ГіГІГ .");
 
-        // Перемикаємось на інший доступний слот
+        // ГЏГҐГ°ГҐГ¬ГЁГЄГ ВєГ¬Г®Г±Гј Г­Г  ВіГ­ГёГЁГ© Г¤Г®Г±ГІГіГЇГ­ГЁГ© Г±Г«Г®ГІ
         if (emptyHandsSlotIndex != -1)
         {
             SelectWeapon(emptyHandsSlotIndex);
@@ -216,49 +216,49 @@ public class WeaponSwitching : MonoBehaviour
                     return;
                 }
             }
-            Debug.LogWarning("У гравця не залишилося зброї.", this);
+            Debug.LogWarning("Г“ ГЈГ°Г ГўГ¶Гї Г­ГҐ Г§Г Г«ГЁГёГЁГ«Г®Г±Гї Г§ГЎГ°Г®Вї.", this);
         }
     }
 
     /// <summary>
-    /// Підбирає зброю та розміщує її у відповідному слоті.
+    /// ГЏВіГ¤ГЎГЁГ°Г Вє Г§ГЎГ°Г®Гѕ ГІГ  Г°Г®Г§Г¬ВіГ№ГіВє ВїВї Гі ГўВіГ¤ГЇГ®ГўВіГ¤Г­Г®Г¬Гі Г±Г«Г®ГІВі.
     /// </summary>
-    /// <returns>Повертає true, якщо зброя була підібрана.</returns>
+    /// <returns>ГЏГ®ГўГҐГ°ГІГ Вє true, ГїГЄГ№Г® Г§ГЎГ°Г®Гї ГЎГіГ«Г  ГЇВіГ¤ВіГЎГ°Г Г­Г .</returns>
     public bool PickupWeapon(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= weaponSlots.Length)
         {
-            Debug.LogError($"Неможливо підібрати зброю: недійсний індекс слоту {slotIndex}", this);
+            Debug.LogError($"ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГЇВіГ¤ВіГЎГ°Г ГІГЁ Г§ГЎГ°Г®Гѕ: Г­ГҐГ¤ВіГ©Г±Г­ГЁГ© ВіГ­Г¤ГҐГЄГ± Г±Г«Г®ГІГі {slotIndex}", this);
             return false;
         }
         if (weaponSlots[slotIndex] != null)
         {
-            Debug.Log($"Неможливо підібрати: Слот {slotIndex} вже зайнятий.");
+            Debug.Log($"ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГЇВіГ¤ВіГЎГ°Г ГІГЁ: Г‘Г«Г®ГІ {slotIndex} ГўГ¦ГҐ Г§Г Г©Г­ГїГІГЁГ©.");
             return false;
         }
         
         if (weaponPrefabs == null || slotIndex >= weaponPrefabs.Length || weaponPrefabs[slotIndex] == null)
         {
-            Debug.LogError($"Неможливо підібрати: Префаб для слоту {slotIndex} не призначено у weaponPrefabs.", this);
+            Debug.LogError($"ГЌГҐГ¬Г®Г¦Г«ГЁГўГ® ГЇВіГ¤ВіГЎГ°Г ГІГЁ: ГЏГ°ГҐГґГ ГЎ Г¤Г«Гї Г±Г«Г®ГІГі {slotIndex} Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г® Гі weaponPrefabs.", this);
             return false;
         }
 
-        // Створюємо екземпляр зброї "в руках" з префабу і робимо його дочірнім до цього об'єкта (WeaponHolder)
+        // Г‘ГІГўГ®Г°ГѕВєГ¬Г® ГҐГЄГ§ГҐГ¬ГЇГ«ГїГ° Г§ГЎГ°Г®Вї "Гў Г°ГіГЄГ Гµ" Г§ ГЇГ°ГҐГґГ ГЎГі Ві Г°Г®ГЎГЁГ¬Г® Г©Г®ГЈГ® Г¤Г®Г·ВіГ°Г­ВіГ¬ Г¤Г® Г¶ГјГ®ГЈГ® Г®ГЎ'ВєГЄГІГ  (WeaponHolder)
         GameObject newWeapon = Instantiate(weaponPrefabs[slotIndex], transform);
         
-        // Додаємо його до нашого масиву слотів
+        // Г„Г®Г¤Г ВєГ¬Г® Г©Г®ГЈГ® Г¤Г® Г­Г ГёГ®ГЈГ® Г¬Г Г±ГЁГўГі Г±Г«Г®ГІВіГў
         weaponSlots[slotIndex] = newWeapon;
         
-        // Перемикаємось на нову зброю
+        // ГЏГҐГ°ГҐГ¬ГЁГЄГ ВєГ¬Г®Г±Гј Г­Г  Г­Г®ГўГі Г§ГЎГ°Г®Гѕ
         SelectWeapon(slotIndex);
         
-        Debug.Log($"Зброя {newWeapon.name} підібрана у слот {slotIndex}");
+        Debug.Log($"Г‡ГЎГ°Г®Гї {newWeapon.name} ГЇВіГ¤ВіГЎГ°Г Г­Г  Гі Г±Г«Г®ГІ {slotIndex}");
         return true;
     }
 
 
     /// <summary>
-    /// Метод, який повертає поточний активний індекс зброї.
+    /// ГЊГҐГІГ®Г¤, ГїГЄГЁГ© ГЇГ®ГўГҐГ°ГІГ Вє ГЇГ®ГІГ®Г·Г­ГЁГ© Г ГЄГІГЁГўГ­ГЁГ© ВіГ­Г¤ГҐГЄГ± Г§ГЎГ°Г®Вї.
     /// </summary>
     public int GetCurrentWeaponIndex()
     {
@@ -266,7 +266,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Метод, який повертає GameObject поточної активної зброї.
+    /// ГЊГҐГІГ®Г¤, ГїГЄГЁГ© ГЇГ®ГўГҐГ°ГІГ Вє GameObject ГЇГ®ГІГ®Г·Г­Г®Вї Г ГЄГІГЁГўГ­Г®Вї Г§ГЎГ°Г®Вї.
     /// </summary>
     public GameObject GetCurrentWeaponGameObject()
     {
@@ -278,11 +278,11 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     // ================================
-    // МЕТОДИ ДЛЯ COMMAND PATTERN
+    // ГЊГ…Г’ГЋГ„Г€ Г„Г‹Гџ COMMAND PATTERN
     // ================================
 
     /// <summary>
-    /// Отримує індекс поточної зброї (для Command Pattern)
+    /// ГЋГІГ°ГЁГ¬ГіВє ВіГ­Г¤ГҐГЄГ± ГЇГ®ГІГ®Г·Г­Г®Вї Г§ГЎГ°Г®Вї (Г¤Г«Гї Command Pattern)
     /// </summary>
     public int GetCurrentWeaponIndex()
     {
@@ -290,7 +290,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Перемикає на конкретну зброю за індексом (для Command Pattern)
+    /// ГЏГҐГ°ГҐГ¬ГЁГЄГ Вє Г­Г  ГЄГ®Г­ГЄГ°ГҐГІГ­Гі Г§ГЎГ°Г®Гѕ Г§Г  ВіГ­Г¤ГҐГЄГ±Г®Г¬ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool SwitchToWeapon(int weaponIndex)
     {
@@ -302,7 +302,7 @@ public class WeaponSwitching : MonoBehaviour
             SelectWeapon(weaponIndex);
             nextSwitchTime = Time.time + switchCooldown;
             
-            // Відправляємо подію перемикання зброї
+            // Г‚ВіГ¤ГЇГ°Г ГўГ«ГїВєГ¬Г® ГЇГ®Г¤ВіГѕ ГЇГҐГ°ГҐГ¬ГЁГЄГ Г­Г­Гї Г§ГЎГ°Г®Вї
             string previousWeaponName = GetWeaponName(previousWeapon);
             string newWeaponName = GetWeaponName(weaponIndex);
             Events.Trigger(new WeaponSwitchedEvent(previousWeaponName, newWeaponName, weaponIndex));
@@ -313,7 +313,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Перемикає на наступну зброю (для Command Pattern)
+    /// ГЏГҐГ°ГҐГ¬ГЁГЄГ Вє Г­Г  Г­Г Г±ГІГіГЇГ­Гі Г§ГЎГ°Г®Гѕ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool SwitchToNextWeapon()
     {
@@ -322,7 +322,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Перемикає на попередню зброю (для Command Pattern)
+    /// ГЏГҐГ°ГҐГ¬ГЁГЄГ Вє Г­Г  ГЇГ®ГЇГҐГ°ГҐГ¤Г­Гѕ Г§ГЎГ°Г®Гѕ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool SwitchToPreviousWeapon()
     {
@@ -331,7 +331,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Перевіряє, чи можна перемикати зброю (для Command Pattern)
+    /// ГЏГҐГ°ГҐГўВіГ°ГїВє, Г·ГЁ Г¬Г®Г¦Г­Г  ГЇГҐГ°ГҐГ¬ГЁГЄГ ГІГЁ Г§ГЎГ°Г®Гѕ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool CanSwitchWeapon()
     {
@@ -339,7 +339,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Викидає поточну зброю (для Command Pattern)
+    /// Г‚ГЁГЄГЁГ¤Г Вє ГЇГ®ГІГ®Г·Г­Гі Г§ГЎГ°Г®Гѕ (Г¤Г«Гї Command Pattern)
     /// </summary>
     public bool DropWeapon()
     {
@@ -354,7 +354,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Отримує назву зброї за індексом
+    /// ГЋГІГ°ГЁГ¬ГіВє Г­Г Г§ГўГі Г§ГЎГ°Г®Вї Г§Г  ВіГ­Г¤ГҐГЄГ±Г®Г¬
     /// </summary>
     private string GetWeaponName(int weaponIndex)
     {
@@ -371,7 +371,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Отримує кількість доступних слотів зброї
+    /// ГЋГІГ°ГЁГ¬ГіВє ГЄВіГ«ГјГЄВіГ±ГІГј Г¤Г®Г±ГІГіГЇГ­ГЁГµ Г±Г«Г®ГІВіГў Г§ГЎГ°Г®Вї
     /// </summary>
     public int GetWeaponSlotCount()
     {
@@ -379,7 +379,7 @@ public class WeaponSwitching : MonoBehaviour
     }
 
     /// <summary>
-    /// Перевіряє, чи слот зброї порожній
+    /// ГЏГҐГ°ГҐГўВіГ°ГїВє, Г·ГЁ Г±Г«Г®ГІ Г§ГЎГ°Г®Вї ГЇГ®Г°Г®Г¦Г­ВіГ©
     /// </summary>
     public bool IsWeaponSlotEmpty(int slotIndex)
     {

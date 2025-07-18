@@ -2,49 +2,49 @@ using UnityEngine;
 
 public class AmmoPickup : MonoBehaviour
 {
-    [Tooltip("Назва зброї або ID, для якої призначений цей набій. Якщо порожньо, підходить для будь-якої зброї.")]
-    public string forWeaponName = ""; // Якщо ви хочете, щоб набої були для конкретної зброї
+    [Tooltip("ГЌГ Г§ГўГ  Г§ГЎГ°Г®Вї Г ГЎГ® ID, Г¤Г«Гї ГїГЄГ®Вї ГЇГ°ГЁГ§Г­Г Г·ГҐГ­ГЁГ© Г¶ГҐГ© Г­Г ГЎВіГ©. ГџГЄГ№Г® ГЇГ®Г°Г®Г¦Г­ГјГ®, ГЇВіГ¤ГµГ®Г¤ГЁГІГј Г¤Г«Гї ГЎГіГ¤Гј-ГїГЄГ®Вї Г§ГЎГ°Г®Вї.")]
+    public string forWeaponName = ""; // ГџГЄГ№Г® ГўГЁ ГµГ®Г·ГҐГІГҐ, Г№Г®ГЎ Г­Г ГЎГ®Вї ГЎГіГ«ГЁ Г¤Г«Гї ГЄГ®Г­ГЄГ°ГҐГІГ­Г®Вї Г§ГЎГ°Г®Вї
     
-    // Можна додати візуальні ефекти або звуки при підбиранні
-    [Tooltip("Ефект, що відтворюється при підбиранні.")]
+    // ГЊГ®Г¦Г­Г  Г¤Г®Г¤Г ГІГЁ ГўВіГ§ГіГ Г«ГјГ­Ві ГҐГґГҐГЄГІГЁ Г ГЎГ® Г§ГўГіГЄГЁ ГЇГ°ГЁ ГЇВіГ¤ГЎГЁГ°Г Г­Г­Ві
+    [Tooltip("Г…ГґГҐГЄГІ, Г№Г® ГўВіГ¤ГІГўГ®Г°ГѕВєГІГјГ±Гї ГЇГ°ГЁ ГЇВіГ¤ГЎГЁГ°Г Г­Г­Ві.")]
     public GameObject pickupEffectPrefab;
-    [Tooltip("Звук, що відтворюється при підбиранні.")]
+    [Tooltip("Г‡ГўГіГЄ, Г№Г® ГўВіГ¤ГІГўГ®Г°ГѕВєГІГјГ±Гї ГЇГ°ГЁ ГЇВіГ¤ГЎГЁГ°Г Г­Г­Ві.")]
     public AudioClip pickupSound;
     
     private void OnTriggerEnter(Collider other)
     {
-        // Перевіряємо, чи це гравець
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г®, Г·ГЁ Г¶ГҐ ГЈГ°Г ГўГҐГ¶Гј
         if (other.CompareTag("Player"))
         {
-            // Намагаємося знайти компонент WeaponSwitching
+            // ГЌГ Г¬Г ГЈГ ВєГ¬Г®Г±Гї Г§Г­Г Г©ГІГЁ ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІ WeaponSwitching
             WeaponSwitching weaponSwitching = other.GetComponentInChildren<WeaponSwitching>();
             if (weaponSwitching != null)
             {
-                // Отримуємо поточну активну зброю
+                // ГЋГІГ°ГЁГ¬ГіВєГ¬Г® ГЇГ®ГІГ®Г·Г­Гі Г ГЄГІГЁГўГ­Гі Г§ГЎГ°Г®Гѕ
                 GameObject currentWeaponGO = weaponSwitching.GetCurrentWeaponGameObject();
                 if (currentWeaponGO != null)
                 {
                     WeaponController weaponController = currentWeaponGO.GetComponent<WeaponController>();
                     if (weaponController != null)
                     {
-                        // Якщо forWeaponName не вказано, або відповідає назві поточної зброї
+                        // ГџГЄГ№Г® forWeaponName Г­ГҐ ГўГЄГ Г§Г Г­Г®, Г ГЎГ® ГўВіГ¤ГЇГ®ГўВіГ¤Г Вє Г­Г Г§ГўВі ГЇГ®ГІГ®Г·Г­Г®Вї Г§ГЎГ°Г®Вї
                         if (string.IsNullOrEmpty(forWeaponName) || currentWeaponGO.name == forWeaponName)
                         {
-                            // Додаємо одну перезарядку
+                            // Г„Г®Г¤Г ВєГ¬Г® Г®Г¤Г­Гі ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі
                             weaponController.AddReloadCharge();
                             
-                            // Відтворюємо ефекти
+                            // Г‚ВіГ¤ГІГўГ®Г°ГѕВєГ¬Г® ГҐГґГҐГЄГІГЁ
                             if (pickupEffectPrefab != null)
                             {
                                 Instantiate(pickupEffectPrefab, transform.position, Quaternion.identity);
                             }
                             if (pickupSound != null)
                             {
-                                // Відтворюємо звук не на цьому об'єкті, а в світі, бо цей об'єкт знищується
+                                // Г‚ВіГ¤ГІГўГ®Г°ГѕВєГ¬Г® Г§ГўГіГЄ Г­ГҐ Г­Г  Г¶ГјГ®Г¬Гі Г®ГЎ'ВєГЄГІВі, Г  Гў Г±ГўВіГІВі, ГЎГ® Г¶ГҐГ© Г®ГЎ'ВєГЄГІ Г§Г­ГЁГ№ГіВєГІГјГ±Гї
                                 AudioSource.PlayClipAtPoint(pickupSound, transform.position);
                             }
                             
-                            // Знищуємо набій
+                            // Г‡Г­ГЁГ№ГіВєГ¬Г® Г­Г ГЎВіГ©
                             Destroy(gameObject);
                         }
                     }

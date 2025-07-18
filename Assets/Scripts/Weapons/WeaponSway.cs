@@ -3,63 +3,63 @@ using UnityEngine;
 public class WeaponSway : MonoBehaviour
 {
     [Header("Sway Settings (Mouse Input)")]
-    [Tooltip("Наскільки сильно зброя буде рухатися по горизонталі (від руху миші X)")]
+    [Tooltip("ГЌГ Г±ГЄВіГ«ГјГЄГЁ Г±ГЁГ«ГјГ­Г® Г§ГЎГ°Г®Гї ГЎГіГ¤ГҐ Г°ГіГµГ ГІГЁГ±Гї ГЇГ® ГЈГ®Г°ГЁГ§Г®Г­ГІГ Г«Ві (ГўВіГ¤ Г°ГіГµГі Г¬ГЁГёВі X)")]
     public float swayAmountX = 0.5f;
-    [Tooltip("Наскільки сильно зброя буде рухатися по вертикалі (від руху миші Y)")]
+    [Tooltip("ГЌГ Г±ГЄВіГ«ГјГЄГЁ Г±ГЁГ«ГјГ­Г® Г§ГЎГ°Г®Гї ГЎГіГ¤ГҐ Г°ГіГµГ ГІГЁГ±Гї ГЇГ® ГўГҐГ°ГІГЁГЄГ Г«Ві (ГўВіГ¤ Г°ГіГµГі Г¬ГЁГёВі Y)")]
     public float swayAmountY = 0.5f;
-    [Tooltip("Плавність повернення зброї до початкової позиції")]
+    [Tooltip("ГЏГ«Г ГўГ­ВіГ±ГІГј ГЇГ®ГўГҐГ°Г­ГҐГ­Г­Гї Г§ГЎГ°Г®Вї Г¤Г® ГЇГ®Г·Г ГІГЄГ®ГўГ®Вї ГЇГ®Г§ГЁГ¶ВіВї")]
     public float smoothAmount = 6f;
-    [Tooltip("Мінімальний рух миші для активації sway (мертва зона)")]
+    [Tooltip("ГЊВіГ­ВіГ¬Г Г«ГјГ­ГЁГ© Г°ГіГµ Г¬ГЁГёВі Г¤Г«Гї Г ГЄГІГЁГўГ Г¶ВіВї sway (Г¬ГҐГ°ГІГўГ  Г§Г®Г­Г )")]
     public float mouseDeadZone = 0.001f;
-    [Tooltip("Максимальне відхилення зброї від центру (у градусах)")]
+    [Tooltip("ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­ГҐ ГўВіГ¤ГµГЁГ«ГҐГ­Г­Гї Г§ГЎГ°Г®Вї ГўВіГ¤ Г¶ГҐГ­ГІГ°Гі (Гі ГЈГ°Г Г¤ГіГ±Г Гµ)")]
     public float maxSwayAngle = 5f;
 
 
     [Header("Bob Settings (Walk/Run Input)")]
-    [Tooltip("Амплітуда (величина) хитання зброї по X та Y осях під час ходьби.")]
+    [Tooltip("ГЂГ¬ГЇГ«ВіГІГіГ¤Г  (ГўГҐГ«ГЁГ·ГЁГ­Г ) ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇГ® X ГІГ  Y Г®Г±ГїГµ ГЇВіГ¤ Г·Г Г± ГµГ®Г¤ГјГЎГЁ.")]
     public Vector2 walkBobAmount = new Vector2(0.1f, 0.1f);
-    [Tooltip("Частота хитання зброї під час ходьби.")]
+    [Tooltip("Г—Г Г±ГІГ®ГІГ  ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇВіГ¤ Г·Г Г± ГµГ®Г¤ГјГЎГЁ.")]
     public float walkBobFrequency = 10f;
-    [Tooltip("Множник амплітуди хитання зброї при бігу.")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ Г Г¬ГЇГ«ВіГІГіГ¤ГЁ ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇГ°ГЁ ГЎВіГЈГі.")]
     public float sprintBobAmountMultiplier = 2f;
-    [Tooltip("Множник частоти хитання зброї при бігу.")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ Г·Г Г±ГІГ®ГІГЁ ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇГ°ГЁ ГЎВіГЈГі.")]
     public float sprintBobFrequencyMultiplier = 1.5f;
-    [Tooltip("Амплітуда хитання зброї при присіданні.")]
+    [Tooltip("ГЂГ¬ГЇГ«ВіГІГіГ¤Г  ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇГ°ГЁ ГЇГ°ГЁГ±ВіГ¤Г Г­Г­Ві.")]
     public Vector2 crouchBobAmount = new Vector2(0.006f, 0.006f);
-    [Tooltip("Частота хитання зброї при присіданні.")]
+    [Tooltip("Г—Г Г±ГІГ®ГІГ  ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГЇГ°ГЁ ГЇГ°ГЁГ±ВіГ¤Г Г­Г­Ві.")]
     public float crouchBobFrequency = 7f;
-    [Tooltip("Мінімальна швидкість руху гравця для активації bob.")]
+    [Tooltip("ГЊВіГ­ВіГ¬Г Г«ГјГ­Г  ГёГўГЁГ¤ГЄВіГ±ГІГј Г°ГіГµГі ГЈГ°Г ГўГ¶Гї Г¤Г«Гї Г ГЄГІГЁГўГ Г¶ВіВї bob.")]
     public float minBobSpeed = 0.1f;
 
     [Header("Vertical Speed Tilt Settings")]
-    [Tooltip("Наскільки сильно зброя нахиляється вниз при стрибку (від 0 до 1).")]
+    [Tooltip("ГЌГ Г±ГЄВіГ«ГјГЄГЁ Г±ГЁГ«ГјГ­Г® Г§ГЎГ°Г®Гї Г­Г ГµГЁГ«ГїВєГІГјГ±Гї ГўГ­ГЁГ§ ГЇГ°ГЁ Г±ГІГ°ГЁГЎГЄГі (ГўВіГ¤ 0 Г¤Г® 1).")]
     [Range(0f, 1f)]
     public float jumpTiltAmount = 0.3f;
-    [Tooltip("Наскільки сильно зброя нахиляється вгору при падінні (від 0 до 1).")]
+    [Tooltip("ГЌГ Г±ГЄВіГ«ГјГЄГЁ Г±ГЁГ«ГјГ­Г® Г§ГЎГ°Г®Гї Г­Г ГµГЁГ«ГїВєГІГјГ±Гї ГўГЈГ®Г°Гі ГЇГ°ГЁ ГЇГ Г¤ВіГ­Г­Ві (ГўВіГ¤ 0 Г¤Г® 1).")]
     [Range(0f, 1f)]
     public float fallTiltAmount = 0.3f;
-    [Tooltip("Максимальний кут нахилу зброї від вертикальної швидкості.")]
+    [Tooltip("ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­ГЁГ© ГЄГіГІ Г­Г ГµГЁГ«Гі Г§ГЎГ°Г®Вї ГўВіГ¤ ГўГҐГ°ГІГЁГЄГ Г«ГјГ­Г®Вї ГёГўГЁГ¤ГЄГ®Г±ГІВі.")]
     public float maxTiltAngle = 10f;
-    [Tooltip("Плавність нахилу зброї від вертикальної швидкості.")]
+    [Tooltip("ГЏГ«Г ГўГ­ВіГ±ГІГј Г­Г ГµГЁГ«Гі Г§ГЎГ°Г®Вї ГўВіГ¤ ГўГҐГ°ГІГЁГЄГ Г«ГјГ­Г®Вї ГёГўГЁГ¤ГЄГ®Г±ГІВі.")]
     public float tiltSmoothSpeed = 5f;
 
 
-    // Приватні змінні
+    // ГЏГ°ГЁГўГ ГІГ­Ві Г§Г¬ВіГ­Г­Ві
     private Quaternion initialLocalRotation;
     private Vector3 initialLocalPosition;
 
     private float bobTimer;
     
-    // Посилання на PlayerMovement та Rigidbody гравця
+    // ГЏГ®Г±ГЁГ«Г Г­Г­Гї Г­Г  PlayerMovement ГІГ  Rigidbody ГЈГ°Г ГўГ¶Гї
     private PlayerMovement playerMovement;
     private Rigidbody playerRb; 
 
-    // Проміжні обертання для комбінування
-    private Quaternion calculatedSwayRotation; // Обертання від руху миші
-    private Quaternion calculatedTiltRotation; // Обертання від вертикальної швидкості
+    // ГЏГ°Г®Г¬ВіГ¦Г­Ві Г®ГЎГҐГ°ГІГ Г­Г­Гї Г¤Г«Гї ГЄГ®Г¬ГЎВіГ­ГіГўГ Г­Г­Гї
+    private Quaternion calculatedSwayRotation; // ГЋГЎГҐГ°ГІГ Г­Г­Гї ГўВіГ¤ Г°ГіГµГі Г¬ГЁГёВі
+    private Quaternion calculatedTiltRotation; // ГЋГЎГҐГ°ГІГ Г­Г­Гї ГўВіГ¤ ГўГҐГ°ГІГЁГЄГ Г«ГјГ­Г®Вї ГёГўГЁГ¤ГЄГ®Г±ГІВі
 
 
-    void Awake() // Використовуємо Awake для ініціалізації
+    void Awake() // Г‚ГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВєГ¬Г® Awake Г¤Г«Гї ВіГ­ВіГ¶ВіГ Г«ВіГ§Г Г¶ВіВї
     {
         initialLocalRotation = transform.localRotation;
         initialLocalPosition = transform.localPosition;
@@ -67,48 +67,48 @@ public class WeaponSway : MonoBehaviour
         playerMovement = GetComponentInParent<PlayerMovement>();
         if (playerMovement == null)
         {
-            Debug.LogWarning("WeaponSway: PlayerMovement скрипт не знайдено в батьківських об'єктах. Деякі функції WeaponSway не працюватимуть.", this);
+            Debug.LogWarning("WeaponSway: PlayerMovement Г±ГЄГ°ГЁГЇГІ Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® Гў ГЎГ ГІГјГЄВіГўГ±ГјГЄГЁГµ Г®ГЎ'ВєГЄГІГ Гµ. Г„ГҐГїГЄВі ГґГіГ­ГЄГ¶ВіВї WeaponSway Г­ГҐ ГЇГ°Г Г¶ГѕГўГ ГІГЁГ¬ГіГІГј.", this);
         }
         else
         {
             playerRb = playerMovement.GetComponent<Rigidbody>();
             if (playerRb == null)
             {
-                Debug.LogWarning("WeaponSway: Rigidbody не знайдено на об'єкті PlayerMovement. Vertical Speed Tilt не працюватиме.", this);
+                Debug.LogWarning("WeaponSway: Rigidbody Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® Г­Г  Г®ГЎ'ВєГЄГІВі PlayerMovement. Vertical Speed Tilt Г­ГҐ ГЇГ°Г Г¶ГѕГўГ ГІГЁГ¬ГҐ.", this);
             }
         }
     }
 
     void Update()
     {
-        // 1. Обчислюємо Sway (рух миші)
+        // 1. ГЋГЎГ·ГЁГ±Г«ГѕВєГ¬Г® Sway (Г°ГіГµ Г¬ГЁГёВі)
         calculatedSwayRotation = CalculateWeaponSway();
 
-        // 2. Обчислюємо Bob (рух гравця WASD)
-        HandleWeaponBob(); // Цей метод змінює transform.localPosition
+        // 2. ГЋГЎГ·ГЁГ±Г«ГѕВєГ¬Г® Bob (Г°ГіГµ ГЈГ°Г ГўГ¶Гї WASD)
+        HandleWeaponBob(); // Г–ГҐГ© Г¬ГҐГІГ®Г¤ Г§Г¬ВіГ­ГѕВє transform.localPosition
 
-        // 3. Обчислюємо Vertical Speed Tilt
+        // 3. ГЋГЎГ·ГЁГ±Г«ГѕВєГ¬Г® Vertical Speed Tilt
         calculatedTiltRotation = CalculateVerticalSpeedTilt();
 
-        // 4. Комбінуємо всі обертання та застосовуємо до зброї
-        // Порядок множення: initialLocalRotation * (sway) * (tilt)
-        // (x * y) - це спочатку y, потім x
-        // Тому якщо ми хочемо, щоб Tilt був "над" Sway, то Tilt йде останнім у множенні,
-        // або першим, якщо множимо справа наліво (Quaternion.Euler(tilt) * Quaternion.Euler(sway))
-        // Спробуємо: initial (базове обертання) * tilt * sway.
-        // Зазвичай, sway/tilt застосовуються відносно базового обертання.
+        // 4. ГЉГ®Г¬ГЎВіГ­ГіВєГ¬Г® ГўГ±Ві Г®ГЎГҐГ°ГІГ Г­Г­Гї ГІГ  Г§Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® Г¤Г® Г§ГЎГ°Г®Вї
+        // ГЏГ®Г°ГїГ¤Г®ГЄ Г¬Г­Г®Г¦ГҐГ­Г­Гї: initialLocalRotation * (sway) * (tilt)
+        // (x * y) - Г¶ГҐ Г±ГЇГ®Г·Г ГІГЄГі y, ГЇГ®ГІВіГ¬ x
+        // Г’Г®Г¬Гі ГїГЄГ№Г® Г¬ГЁ ГµГ®Г·ГҐГ¬Г®, Г№Г®ГЎ Tilt ГЎГіГў "Г­Г Г¤" Sway, ГІГ® Tilt Г©Г¤ГҐ Г®Г±ГІГ Г­Г­ВіГ¬ Гі Г¬Г­Г®Г¦ГҐГ­Г­Ві,
+        // Г ГЎГ® ГЇГҐГ°ГёГЁГ¬, ГїГЄГ№Г® Г¬Г­Г®Г¦ГЁГ¬Г® Г±ГЇГ°Г ГўГ  Г­Г Г«ВіГўГ® (Quaternion.Euler(tilt) * Quaternion.Euler(sway))
+        // Г‘ГЇГ°Г®ГЎГіВєГ¬Г®: initial (ГЎГ Г§Г®ГўГҐ Г®ГЎГҐГ°ГІГ Г­Г­Гї) * tilt * sway.
+        // Г‡Г Г§ГўГЁГ·Г Г©, sway/tilt Г§Г Г±ГІГ®Г±Г®ГўГіГѕГІГјГ±Гї ГўВіГ¤Г­Г®Г±Г­Г® ГЎГ Г§Г®ГўГ®ГЈГ® Г®ГЎГҐГ°ГІГ Г­Г­Гї.
         
-        // Final Rotation = Базове обертання * (Sway Rotation) * (Tilt Rotation)
+        // Final Rotation = ГЃГ Г§Г®ГўГҐ Г®ГЎГҐГ°ГІГ Г­Г­Гї * (Sway Rotation) * (Tilt Rotation)
         Quaternion finalRotation = initialLocalRotation * calculatedSwayRotation * calculatedTiltRotation;
 
-        // Плавно застосовуємо кінцеве обертання
+        // ГЏГ«Г ГўГ­Г® Г§Г Г±ГІГ®Г±Г®ГўГіВєГ¬Г® ГЄВіГ­Г¶ГҐГўГҐ Г®ГЎГҐГ°ГІГ Г­Г­Гї
         transform.localRotation = Quaternion.Slerp(transform.localRotation, finalRotation, Time.deltaTime * smoothAmount);
     }
 
     /// <summary>
-    /// Обчислює обертання зброї від руху миші (Sway).
+    /// ГЋГЎГ·ГЁГ±Г«ГѕВє Г®ГЎГҐГ°ГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГўВіГ¤ Г°ГіГµГі Г¬ГЁГёВі (Sway).
     /// </summary>
-    /// <returns>Quaternion, що представляє обертання Sway.</returns>
+    /// <returns>Quaternion, Г№Г® ГЇГ°ГҐГ¤Г±ГІГ ГўГ«ГїВє Г®ГЎГҐГ°ГІГ Г­Г­Гї Sway.</returns>
     Quaternion CalculateWeaponSway()
     {
         float mouseX = Input.GetAxis("Mouse X");
@@ -127,7 +127,7 @@ public class WeaponSway : MonoBehaviour
     }
 
     /// <summary>
-    /// Обробляє позиційне хитання зброї від руху гравця (Bob).
+    /// ГЋГЎГ°Г®ГЎГ«ГїВє ГЇГ®Г§ГЁГ¶ВіГ©Г­ГҐ ГµГЁГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГўВіГ¤ Г°ГіГµГі ГЈГ°Г ГўГ¶Гї (Bob).
     /// </summary>
     void HandleWeaponBob()
     {
@@ -168,9 +168,9 @@ public class WeaponSway : MonoBehaviour
     }
 
     /// <summary>
-    /// Обчислює обертання зброї від вертикальної швидкості гравця (Tilt).
+    /// ГЋГЎГ·ГЁГ±Г«ГѕВє Г®ГЎГҐГ°ГІГ Г­Г­Гї Г§ГЎГ°Г®Вї ГўВіГ¤ ГўГҐГ°ГІГЁГЄГ Г«ГјГ­Г®Вї ГёГўГЁГ¤ГЄГ®Г±ГІВі ГЈГ°Г ГўГ¶Гї (Tilt).
     /// </summary>
-    /// <returns>Quaternion, що представляє обертання Tilt.</returns>
+    /// <returns>Quaternion, Г№Г® ГЇГ°ГҐГ¤Г±ГІГ ГўГ«ГїВє Г®ГЎГҐГ°ГІГ Г­Г­Гї Tilt.</returns>
     Quaternion CalculateVerticalSpeedTilt()
     {
         if (playerRb == null) return Quaternion.identity;
@@ -178,20 +178,20 @@ public class WeaponSway : MonoBehaviour
         float verticalVelocity = playerRb.velocity.y;
         float targetTiltAngle = 0f;
 
-        if (verticalVelocity > 0.1f) // Стрибаємо (рухаємося вгору)
+        if (verticalVelocity > 0.1f) // Г‘ГІГ°ГЁГЎГ ВєГ¬Г® (Г°ГіГµГ ВєГ¬Г®Г±Гї ГўГЈГ®Г°Гі)
         {
-            targetTiltAngle = -verticalVelocity * jumpTiltAmount; // Мінус, щоб нахиляло вниз
+            targetTiltAngle = -verticalVelocity * jumpTiltAmount; // ГЊВіГ­ГіГ±, Г№Г®ГЎ Г­Г ГµГЁГ«ГїГ«Г® ГўГ­ГЁГ§
         }
-        else if (verticalVelocity < -0.1f) // Падаємо (рухаємося вниз)
+        else if (verticalVelocity < -0.1f) // ГЏГ Г¤Г ВєГ¬Г® (Г°ГіГµГ ВєГ¬Г®Г±Гї ГўГ­ГЁГ§)
         {
-            targetTiltAngle = -verticalVelocity * fallTiltAmount; // Мінус, щоб нахиляло вгору (від'ємна швидкість * від'ємний коефіцієнт = позитивний кут)
+            targetTiltAngle = -verticalVelocity * fallTiltAmount; // ГЊВіГ­ГіГ±, Г№Г®ГЎ Г­Г ГµГЁГ«ГїГ«Г® ГўГЈГ®Г°Гі (ГўВіГ¤'ВєГ¬Г­Г  ГёГўГЁГ¤ГЄВіГ±ГІГј * ГўВіГ¤'ВєГ¬Г­ГЁГ© ГЄГ®ГҐГґВіГ¶ВіВєГ­ГІ = ГЇГ®Г§ГЁГІГЁГўГ­ГЁГ© ГЄГіГІ)
         }
 
         targetTiltAngle = Mathf.Clamp(targetTiltAngle, -maxTiltAngle, maxTiltAngle);
 
-        // Плавно переходимо до цільового кута
-        // Це значення буде Lerp'атися в Update() при застосуванні finalRotation.
-        // Тому тут просто повертаємо обертання, що представляє цей нахил.
+        // ГЏГ«Г ГўГ­Г® ГЇГҐГ°ГҐГµГ®Г¤ГЁГ¬Г® Г¤Г® Г¶ВіГ«ГјГ®ГўГ®ГЈГ® ГЄГіГІГ 
+        // Г–ГҐ Г§Г­Г Г·ГҐГ­Г­Гї ГЎГіГ¤ГҐ Lerp'Г ГІГЁГ±Гї Гў Update() ГЇГ°ГЁ Г§Г Г±ГІГ®Г±ГіГўГ Г­Г­Ві finalRotation.
+        // Г’Г®Г¬Гі ГІГіГІ ГЇГ°Г®Г±ГІГ® ГЇГ®ГўГҐГ°ГІГ ВєГ¬Г® Г®ГЎГҐГ°ГІГ Г­Г­Гї, Г№Г® ГЇГ°ГҐГ¤Г±ГІГ ГўГ«ГїВє Г¶ГҐГ© Г­Г ГµГЁГ«.
         return Quaternion.Euler(targetTiltAngle, 0, 0);
     }
 }

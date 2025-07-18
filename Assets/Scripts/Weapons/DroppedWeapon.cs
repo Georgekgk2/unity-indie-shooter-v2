@@ -3,33 +3,33 @@ using UnityEngine;
 public class DroppedWeapon : MonoBehaviour
 {
     [Header("Weapon Settings")]
-    [Tooltip("Індекс слоту, до якого належить ця зброя. 0 для першого слоту, 1 для другого і т.д.")]
-    public int weaponSlotIndex = 0; // Це ключ до нової системи!
+    [Tooltip("ВІГ­Г¤ГҐГЄГ± Г±Г«Г®ГІГі, Г¤Г® ГїГЄГ®ГЈГ® Г­Г Г«ГҐГ¦ГЁГІГј Г¶Гї Г§ГЎГ°Г®Гї. 0 Г¤Г«Гї ГЇГҐГ°ГёГ®ГЈГ® Г±Г«Г®ГІГі, 1 Г¤Г«Гї Г¤Г°ГіГЈГ®ГЈГ® Ві ГІ.Г¤.")]
+    public int weaponSlotIndex = 0; // Г–ГҐ ГЄГ«ГѕГ· Г¤Г® Г­Г®ГўГ®Вї Г±ГЁГ±ГІГҐГ¬ГЁ!
 
-    [Tooltip("Чи можна підібрати цю зброю?")]
+    [Tooltip("Г—ГЁ Г¬Г®Г¦Г­Г  ГЇВіГ¤ВіГЎГ°Г ГІГЁ Г¶Гѕ Г§ГЎГ°Г®Гѕ?")]
     public bool canBePickedUp = true;
     
-    // Посилання на префаб "в руках" більше не потрібне, оскільки WeaponSwitching тепер використовує свій масив `weaponPrefabs`
+    // ГЏГ®Г±ГЁГ«Г Г­Г­Гї Г­Г  ГЇГ°ГҐГґГ ГЎ "Гў Г°ГіГЄГ Гµ" ГЎВіГ«ГјГёГҐ Г­ГҐ ГЇГ®ГІГ°ВіГЎГ­ГҐ, Г®Г±ГЄВіГ«ГјГЄГЁ WeaponSwitching ГІГҐГЇГҐГ° ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВє Г±ГўВіГ© Г¬Г Г±ГЁГў `weaponPrefabs`
     // public GameObject weaponPrefabForPlayer; 
 
-    // Метод, який спрацьовує при зіткненні
+    // ГЊГҐГІГ®Г¤, ГїГЄГЁГ© Г±ГЇГ°Г Г¶ГјГ®ГўГіВє ГЇГ°ГЁ Г§ВіГІГЄГ­ГҐГ­Г­Ві
     private void OnCollisionEnter(Collision collision)
     {
         if (!canBePickedUp) return;
 
-        // Перевіряємо, чи зіткнулися з гравцем (за тегом "Player")
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г®, Г·ГЁ Г§ВіГІГЄГ­ГіГ«ГЁГ±Гї Г§ ГЈГ°Г ГўГ¶ГҐГ¬ (Г§Г  ГІГҐГЈГ®Г¬ "Player")
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Шукаємо WeaponSwitching компонент на гравцеві або його дочірніх об'єктах
+            // ГГіГЄГ ВєГ¬Г® WeaponSwitching ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІ Г­Г  ГЈГ°Г ГўГ¶ГҐГўВі Г ГЎГ® Г©Г®ГЈГ® Г¤Г®Г·ВіГ°Г­ВіГµ Г®ГЎ'ВєГЄГІГ Гµ
             WeaponSwitching weaponSwitching = collision.gameObject.GetComponentInChildren<WeaponSwitching>();
             if (weaponSwitching != null)
             {
-                // Викликаємо метод для підбору зброї, передаючи індекс слоту
+                // Г‚ГЁГЄГ«ГЁГЄГ ВєГ¬Г® Г¬ГҐГІГ®Г¤ Г¤Г«Гї ГЇВіГ¤ГЎГ®Г°Гі Г§ГЎГ°Г®Вї, ГЇГҐГ°ГҐГ¤Г ГѕГ·ГЁ ВіГ­Г¤ГҐГЄГ± Г±Г«Г®ГІГі
                 bool pickedUp = weaponSwitching.PickupWeapon(weaponSlotIndex);
 
                 if (pickedUp)
                 {
-                    // Якщо зброю успішно підібрано, знищуємо цей об'єкт
+                    // ГџГЄГ№Г® Г§ГЎГ°Г®Гѕ ГіГ±ГЇВіГёГ­Г® ГЇВіГ¤ВіГЎГ°Г Г­Г®, Г§Г­ГЁГ№ГіВєГ¬Г® Г¶ГҐГ© Г®ГЎ'ВєГЄГІ
                     Destroy(gameObject);
                 }
             }

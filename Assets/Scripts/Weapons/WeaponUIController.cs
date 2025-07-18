@@ -1,76 +1,76 @@
 using UnityEngine;
-using UnityEngine.UI; // Для роботи з Image компонентами
-using TMPro; // Для TextMeshPro, якщо використовуєте
+using UnityEngine.UI; // Г„Г«Гї Г°Г®ГЎГ®ГІГЁ Г§ Image ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІГ Г¬ГЁ
+using TMPro; // Г„Г«Гї TextMeshPro, ГїГЄГ№Г® ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВєГІГҐ
 
 public class WeaponUIController : MonoBehaviour
 {
     [Header("UI Elements")]
-    [Tooltip("Масив Image компонентів, що представляють іконки слотів зброї в UI.")]
-    public Image[] weaponSlotIcons; // Призначте сюди Image компонентів з UI
-    [Tooltip("Текстовий елемент для відображення назви поточної зброї.")]
+    [Tooltip("ГЊГ Г±ГЁГў Image ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІВіГў, Г№Г® ГЇГ°ГҐГ¤Г±ГІГ ГўГ«ГїГѕГІГј ВіГЄГ®Г­ГЄГЁ Г±Г«Г®ГІВіГў Г§ГЎГ°Г®Вї Гў UI.")]
+    public Image[] weaponSlotIcons; // ГЏГ°ГЁГ§Г­Г Г·ГІГҐ Г±ГѕГ¤ГЁ Image ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІВіГў Г§ UI
+    [Tooltip("Г’ГҐГЄГ±ГІГ®ГўГЁГ© ГҐГ«ГҐГ¬ГҐГ­ГІ Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Г­Г Г§ГўГЁ ГЇГ®ГІГ®Г·Г­Г®Вї Г§ГЎГ°Г®Вї.")]
     public TextMeshProUGUI weaponNameText;
-    [Tooltip("Текстовий елемент для відображення кількості патронів.")]
+    [Tooltip("Г’ГҐГЄГ±ГІГ®ГўГЁГ© ГҐГ«ГҐГ¬ГҐГ­ГІ Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї ГЄВіГ«ГјГЄГ®Г±ГІВі ГЇГ ГІГ°Г®Г­ВіГў.")]
     public TextMeshProUGUI ammoText;
 
     [Header("UI Visuals")]
-    [Tooltip("Колір активної іконки слоту (повна видимість).")]
-    public Color activeSlotColor = Color.white; // Повна видимість, стандартний білий
-    [Tooltip("Колір неактивної іконки слоту (напівпрозорий).")]
-    public Color inactiveSlotColor = new Color(1f, 1f, 1f, 0.3f); // Білий з 30% прозорістю
-    [Tooltip("Колір тексту патронів під час перезарядки або коли патрони закінчились.")]
+    [Tooltip("ГЉГ®Г«ВіГ° Г ГЄГІГЁГўГ­Г®Вї ВіГЄГ®Г­ГЄГЁ Г±Г«Г®ГІГі (ГЇГ®ГўГ­Г  ГўГЁГ¤ГЁГ¬ВіГ±ГІГј).")]
+    public Color activeSlotColor = Color.white; // ГЏГ®ГўГ­Г  ГўГЁГ¤ГЁГ¬ВіГ±ГІГј, Г±ГІГ Г­Г¤Г Г°ГІГ­ГЁГ© ГЎВіГ«ГЁГ©
+    [Tooltip("ГЉГ®Г«ВіГ° Г­ГҐГ ГЄГІГЁГўГ­Г®Вї ВіГЄГ®Г­ГЄГЁ Г±Г«Г®ГІГі (Г­Г ГЇВіГўГЇГ°Г®Г§Г®Г°ГЁГ©).")]
+    public Color inactiveSlotColor = new Color(1f, 1f, 1f, 0.3f); // ГЃВіГ«ГЁГ© Г§ 30% ГЇГ°Г®Г§Г®Г°ВіГ±ГІГѕ
+    [Tooltip("ГЉГ®Г«ВіГ° ГІГҐГЄГ±ГІГі ГЇГ ГІГ°Г®Г­ВіГў ГЇВіГ¤ Г·Г Г± ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ Г ГЎГ® ГЄГ®Г«ГЁ ГЇГ ГІГ°Г®Г­ГЁ Г§Г ГЄВіГ­Г·ГЁГ«ГЁГ±Гј.")]
     public Color reloadingAmmoTextColor = Color.yellow;
-    [Tooltip("Стандартний колір тексту патронів.")]
+    [Tooltip("Г‘ГІГ Г­Г¤Г Г°ГІГ­ГЁГ© ГЄГ®Г«ВіГ° ГІГҐГЄГ±ГІГі ГЇГ ГІГ°Г®Г­ВіГў.")]
     public Color normalAmmoTextColor = Color.white;
 
-    [Tooltip("Множник масштабу для активної іконки слоту.")]
+    [Tooltip("ГЊГ­Г®Г¦Г­ГЁГЄ Г¬Г Г±ГёГІГ ГЎГі Г¤Г«Гї Г ГЄГІГЁГўГ­Г®Вї ВіГЄГ®Г­ГЄГЁ Г±Г«Г®ГІГі.")]
     public float activeSlotScale = 1.2f;
-    [Tooltip("Швидкість анімації зміни розміру/кольору іконки слоту.")]
+    [Tooltip("ГГўГЁГ¤ГЄВіГ±ГІГј Г Г­ВіГ¬Г Г¶ВіВї Г§Г¬ВіГ­ГЁ Г°Г®Г§Г¬ВіГ°Гі/ГЄГ®Г«ГјГ®Г°Гі ВіГЄГ®Г­ГЄГЁ Г±Г«Г®ГІГі.")]
     public float iconLerpSpeed = 10f;
-    [Tooltip("Швидкість анімації зміни кольору тексту.")]
+    [Tooltip("ГГўГЁГ¤ГЄВіГ±ГІГј Г Г­ВіГ¬Г Г¶ВіВї Г§Г¬ВіГ­ГЁ ГЄГ®Г«ГјГ®Г°Гі ГІГҐГЄГ±ГІГі.")]
     public float textColorLerpSpeed = 5f;
 
     [Header("Ammo Display Settings")]
-    [Tooltip("Текст, що відображається, якщо немає активної зброї або порожні руки.")]
-    public string emptyWeaponText = "Руки порожні";
-    [Tooltip("Формат відображення патронів. Використовуйте {current} та {max}.")]
+    [Tooltip("Г’ГҐГЄГ±ГІ, Г№Г® ГўВіГ¤Г®ГЎГ°Г Г¦Г ВєГІГјГ±Гї, ГїГЄГ№Г® Г­ГҐГ¬Г Вє Г ГЄГІГЁГўГ­Г®Вї Г§ГЎГ°Г®Вї Г ГЎГ® ГЇГ®Г°Г®Г¦Г­Ві Г°ГіГЄГЁ.")]
+    public string emptyWeaponText = "ГђГіГЄГЁ ГЇГ®Г°Г®Г¦Г­Ві";
+    [Tooltip("Г”Г®Г°Г¬Г ГІ ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї ГЇГ ГІГ°Г®Г­ВіГў. Г‚ГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіГ©ГІГҐ {current} ГІГ  {max}.")]
     public string ammoFormat = "{current} / {max}";
-    [Tooltip("Текст, що відображається під час перезарядки.")]
-    public string reloadingText = "Перезарядка...";
-    [Tooltip("Текст, що відображається, якщо патронів немає і зброя не перезаряджається.")]
-    public string outOfAmmoText = "НЕМАЄ ПАТРОНІВ!";
+    [Tooltip("Г’ГҐГЄГ±ГІ, Г№Г® ГўВіГ¤Г®ГЎГ°Г Г¦Г ВєГІГјГ±Гї ГЇВіГ¤ Г·Г Г± ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ.")]
+    public string reloadingText = "ГЏГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГ ...";
+    [Tooltip("Г’ГҐГЄГ±ГІ, Г№Г® ГўВіГ¤Г®ГЎГ°Г Г¦Г ВєГІГјГ±Гї, ГїГЄГ№Г® ГЇГ ГІГ°Г®Г­ВіГў Г­ГҐГ¬Г Вє Ві Г§ГЎГ°Г®Гї Г­ГҐ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤Г¦Г ВєГІГјГ±Гї.")]
+    public string outOfAmmoText = "ГЌГ…ГЊГЂВЄ ГЏГЂГ’ГђГЋГЌВІГ‚!";
 
-    // Приватні посилання на скрипти
+    // ГЏГ°ГЁГўГ ГІГ­Ві ГЇГ®Г±ГЁГ«Г Г­Г­Гї Г­Г  Г±ГЄГ°ГЁГЇГІГЁ
     private WeaponSwitching weaponSwitching;
     private WeaponController activeWeaponController;
-    private int lastSelectedWeaponIndex = -1; // Зберігаємо попередній індекс для оптимізації
+    private int lastSelectedWeaponIndex = -1; // Г‡ГЎГҐГ°ВіГЈГ ВєГ¬Г® ГЇГ®ГЇГҐГ°ГҐГ¤Г­ВіГ© ВіГ­Г¤ГҐГЄГ± Г¤Г«Гї Г®ГЇГІГЁГ¬ВіГ§Г Г¶ВіВї
 
     void Awake()
     {
         weaponSwitching = GetComponent<WeaponSwitching>();
         if (weaponSwitching == null)
         {
-            Debug.LogError("WeaponUIController: WeaponSwitching скрипт не знайдено на цьому GameObject. Скрипт вимкнено.", this);
+            Debug.LogError("WeaponUIController: WeaponSwitching Г±ГЄГ°ГЁГЇГІ Г­ГҐ Г§Г­Г Г©Г¤ГҐГ­Г® Г­Г  Г¶ГјГ®Г¬Гі GameObject. Г‘ГЄГ°ГЁГЇГІ ГўГЁГ¬ГЄГ­ГҐГ­Г®.", this);
             enabled = false;
             return;
         }
 
-        // Перевірка, чи призначені всі UI елементи (можна зробити більш надійним)
-        if (weaponSlotIcons == null || weaponSlotIcons.Length == 0) Debug.LogWarning("WeaponUIController: Масив weaponSlotIcons порожній або не призначений.", this);
-        if (weaponNameText == null) Debug.LogWarning("WeaponUIController: weaponNameText не призначено.", this);
-        if (ammoText == null) Debug.LogWarning("WeaponUIController: ammoText не призначено.", this);
+        // ГЏГҐГ°ГҐГўВіГ°ГЄГ , Г·ГЁ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Ві ГўГ±Ві UI ГҐГ«ГҐГ¬ГҐГ­ГІГЁ (Г¬Г®Г¦Г­Г  Г§Г°Г®ГЎГЁГІГЁ ГЎВіГ«ГјГё Г­Г Г¤ВіГ©Г­ГЁГ¬)
+        if (weaponSlotIcons == null || weaponSlotIcons.Length == 0) Debug.LogWarning("WeaponUIController: ГЊГ Г±ГЁГў weaponSlotIcons ГЇГ®Г°Г®Г¦Г­ВіГ© Г ГЎГ® Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­ГЁГ©.", this);
+        if (weaponNameText == null) Debug.LogWarning("WeaponUIController: weaponNameText Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г®.", this);
+        if (ammoText == null) Debug.LogWarning("WeaponUIController: ammoText Г­ГҐ ГЇГ°ГЁГ§Г­Г Г·ГҐГ­Г®.", this);
     }
 
     void Start()
     {
-        // Ініціалізуємо UI при старті, використовуючи початковий вибір зброї
-        // Це гарантує, що UI відобразить правильний стан одразу
-        lastSelectedWeaponIndex = weaponSwitching.GetCurrentWeaponIndex(); // Отримуємо початковий індекс
-        UpdateWeaponUI(true); // Викликаємо Update з forceUpdate = true для повної ініціалізації
+        // ВІГ­ВіГ¶ВіГ Г«ВіГ§ГіВєГ¬Г® UI ГЇГ°ГЁ Г±ГІГ Г°ГІВі, ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіГѕГ·ГЁ ГЇГ®Г·Г ГІГЄГ®ГўГЁГ© ГўГЁГЎВіГ° Г§ГЎГ°Г®Вї
+        // Г–ГҐ ГЈГ Г°Г Г­ГІГіВє, Г№Г® UI ГўВіГ¤Г®ГЎГ°Г Г§ГЁГІГј ГЇГ°Г ГўГЁГ«ГјГ­ГЁГ© Г±ГІГ Г­ Г®Г¤Г°Г Г§Гі
+        lastSelectedWeaponIndex = weaponSwitching.GetCurrentWeaponIndex(); // ГЋГІГ°ГЁГ¬ГіВєГ¬Г® ГЇГ®Г·Г ГІГЄГ®ГўГЁГ© ВіГ­Г¤ГҐГЄГ±
+        UpdateWeaponUI(true); // Г‚ГЁГЄГ«ГЁГЄГ ВєГ¬Г® Update Г§ forceUpdate = true Г¤Г«Гї ГЇГ®ГўГ­Г®Вї ВіГ­ВіГ¶ВіГ Г«ВіГ§Г Г¶ВіВї
     }
 
     void Update()
     {
-        // Отримуємо поточний активний об'єкт зброї
+        // ГЋГІГ°ГЁГ¬ГіВєГ¬Г® ГЇГ®ГІГ®Г·Г­ГЁГ© Г ГЄГІГЁГўГ­ГЁГ© Г®ГЎ'ВєГЄГІ Г§ГЎГ°Г®Вї
         GameObject currentWeaponGO = weaponSwitching.GetCurrentWeaponGameObject();
         if (currentWeaponGO != null)
         {
@@ -81,25 +81,25 @@ public class WeaponUIController : MonoBehaviour
             activeWeaponController = null;
         }
 
-        // Перевіряємо, чи змінився вибраний слот зброї
+        // ГЏГҐГ°ГҐГўВіГ°ГїВєГ¬Г®, Г·ГЁ Г§Г¬ВіГ­ГЁГўГ±Гї ГўГЁГЎГ°Г Г­ГЁГ© Г±Г«Г®ГІ Г§ГЎГ°Г®Вї
         int currentSlotIndex = weaponSwitching.GetCurrentWeaponIndex();
         bool forceUpdate = false;
         if (currentSlotIndex != lastSelectedWeaponIndex)
         {
-            forceUpdate = true; // Примусове оновлення при зміні слоту
+            forceUpdate = true; // ГЏГ°ГЁГ¬ГіГ±Г®ГўГҐ Г®Г­Г®ГўГ«ГҐГ­Г­Гї ГЇГ°ГЁ Г§Г¬ВіГ­Ві Г±Г«Г®ГІГі
             lastSelectedWeaponIndex = currentSlotIndex;
         }
 
-        UpdateWeaponUI(forceUpdate); // Оновлюємо UI. Можемо оптимізувати, щоб оновлювати лише при зміні патронів або перезарядки.
+        UpdateWeaponUI(forceUpdate); // ГЋГ­Г®ГўГ«ГѕВєГ¬Г® UI. ГЊГ®Г¦ГҐГ¬Г® Г®ГЇГІГЁГ¬ВіГ§ГіГўГ ГІГЁ, Г№Г®ГЎ Г®Г­Г®ГўГ«ГѕГўГ ГІГЁ Г«ГЁГёГҐ ГЇГ°ГЁ Г§Г¬ВіГ­Ві ГЇГ ГІГ°Г®Г­ВіГў Г ГЎГ® ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ.
     }
 
     /// <summary>
-    /// Оновлює всі візуальні елементи UI, пов'язані зі зброєю.
+    /// ГЋГ­Г®ГўГ«ГѕВє ГўГ±Ві ГўВіГ§ГіГ Г«ГјГ­Ві ГҐГ«ГҐГ¬ГҐГ­ГІГЁ UI, ГЇГ®Гў'ГїГ§Г Г­Ві Г§Ві Г§ГЎГ°Г®ВєГѕ.
     /// </summary>
-    /// <param name="forceUpdate">Примусово оновити всі елементи, навіть якщо вони не змінились (корисно при старті або зміні зброї).</param>
+    /// <param name="forceUpdate">ГЏГ°ГЁГ¬ГіГ±Г®ГўГ® Г®Г­Г®ГўГЁГІГЁ ГўГ±Ві ГҐГ«ГҐГ¬ГҐГ­ГІГЁ, Г­Г ГўВіГІГј ГїГЄГ№Г® ГўГ®Г­ГЁ Г­ГҐ Г§Г¬ВіГ­ГЁГ«ГЁГ±Гј (ГЄГ®Г°ГЁГ±Г­Г® ГЇГ°ГЁ Г±ГІГ Г°ГІВі Г ГЎГ® Г§Г¬ВіГ­Ві Г§ГЎГ°Г®Вї).</param>
     void UpdateWeaponUI(bool forceUpdate = false)
     {
-        // === Оновлення іконок слотів ===
+        // === ГЋГ­Г®ГўГ«ГҐГ­Г­Гї ВіГЄГ®Г­Г®ГЄ Г±Г«Г®ГІВіГў ===
         if (weaponSlotIcons != null && weaponSlotIcons.Length > 0)
         {
             int currentSlotIndex = weaponSwitching.GetCurrentWeaponIndex();
@@ -107,11 +107,11 @@ public class WeaponUIController : MonoBehaviour
             {
                 if (weaponSlotIcons[i] != null)
                 {
-                    // Цільові значення для кольору та масштабу
+                    // Г–ВіГ«ГјГ®ГўВі Г§Г­Г Г·ГҐГ­Г­Гї Г¤Г«Гї ГЄГ®Г«ГјГ®Г°Гі ГІГ  Г¬Г Г±ГёГІГ ГЎГі
                     Color targetColor = (i == currentSlotIndex) ? activeSlotColor : inactiveSlotColor;
                     float targetScale = (i == currentSlotIndex) ? activeSlotScale : 1f;
 
-                    // Плавна анімація лише, якщо не примусове оновлення або якщо значення вже сильно відрізняються
+                    // ГЏГ«Г ГўГ­Г  Г Г­ВіГ¬Г Г¶ВіГї Г«ГЁГёГҐ, ГїГЄГ№Г® Г­ГҐ ГЇГ°ГЁГ¬ГіГ±Г®ГўГҐ Г®Г­Г®ГўГ«ГҐГ­Г­Гї Г ГЎГ® ГїГЄГ№Г® Г§Г­Г Г·ГҐГ­Г­Гї ГўГ¦ГҐ Г±ГЁГ«ГјГ­Г® ГўВіГ¤Г°ВіГ§Г­ГїГѕГІГјГ±Гї
                     if (forceUpdate || Vector3.Distance(weaponSlotIcons[i].rectTransform.localScale, Vector3.one * targetScale) > 0.01f || Mathf.Abs(weaponSlotIcons[i].color.a - targetColor.a) > 0.01f)
                     {
                         weaponSlotIcons[i].color = Color.Lerp(weaponSlotIcons[i].color, targetColor, Time.deltaTime * iconLerpSpeed);
@@ -121,33 +121,33 @@ public class WeaponUIController : MonoBehaviour
             }
         }
 
-        // === Оновлення тексту назви зброї ===
+        // === ГЋГ­Г®ГўГ«ГҐГ­Г­Гї ГІГҐГЄГ±ГІГі Г­Г Г§ГўГЁ Г§ГЎГ°Г®Вї ===
         if (weaponNameText != null)
         {
             string newWeaponName = "";
             if (activeWeaponController != null)
             {
-                newWeaponName = activeWeaponController.gameObject.name; // Відображаємо назву об'єкта зброї
+                newWeaponName = activeWeaponController.gameObject.name; // Г‚ВіГ¤Г®ГЎГ°Г Г¦Г ВєГ¬Г® Г­Г Г§ГўГі Г®ГЎ'ВєГЄГІГ  Г§ГЎГ°Г®Вї
             }
             else
             {
-                // Якщо зброї немає (порожні руки)
+                // ГџГЄГ№Г® Г§ГЎГ°Г®Вї Г­ГҐГ¬Г Вє (ГЇГ®Г°Г®Г¦Г­Ві Г°ГіГЄГЁ)
                 if (weaponSwitching.GetCurrentWeaponIndex() == weaponSwitching.emptyHandsSlotIndex)
                 {
                     newWeaponName = emptyWeaponText;
                 }
-                // Якщо слот порожній, але не emptyHandsSlot (наприклад, null-елемент в масиві)
-                // Тоді newWeaponName залишиться порожнім рядком
+                // ГџГЄГ№Г® Г±Г«Г®ГІ ГЇГ®Г°Г®Г¦Г­ВіГ©, Г Г«ГҐ Г­ГҐ emptyHandsSlot (Г­Г ГЇГ°ГЁГЄГ«Г Г¤, null-ГҐГ«ГҐГ¬ГҐГ­ГІ Гў Г¬Г Г±ГЁГўВі)
+                // Г’Г®Г¤Ві newWeaponName Г§Г Г«ГЁГёГЁГІГјГ±Гї ГЇГ®Г°Г®Г¦Г­ВіГ¬ Г°ГїГ¤ГЄГ®Г¬
             }
             
-            // Оновлюємо текст тільки якщо він змінився або якщо forceUpdate
+            // ГЋГ­Г®ГўГ«ГѕВєГ¬Г® ГІГҐГЄГ±ГІ ГІВіГ«ГјГЄГЁ ГїГЄГ№Г® ГўВіГ­ Г§Г¬ВіГ­ГЁГўГ±Гї Г ГЎГ® ГїГЄГ№Г® forceUpdate
             if (forceUpdate || weaponNameText.text != newWeaponName)
             {
                 weaponNameText.text = newWeaponName;
             }
         }
 
-        // === Оновлення тексту кількості патронів ===
+        // === ГЋГ­Г®ГўГ«ГҐГ­Г­Гї ГІГҐГЄГ±ГІГі ГЄВіГ«ГјГЄГ®Г±ГІВі ГЇГ ГІГ°Г®Г­ВіГў ===
         if (ammoText != null)
         {
             string newAmmoText = "";
@@ -165,10 +165,10 @@ public class WeaponUIController : MonoBehaviour
                     int currentAmmo = activeWeaponController.GetCurrentAmmo();
                     int maxAmmo = activeWeaponController.GetMagazineSize();
                     
-                    if (currentAmmo <= 0) // Якщо патронів 0
+                    if (currentAmmo <= 0) // ГџГЄГ№Г® ГЇГ ГІГ°Г®Г­ВіГў 0
                     {
                         newAmmoText = outOfAmmoText;
-                        targetAmmoTextColor = reloadingAmmoTextColor; // Можна використовувати червоний колір
+                        targetAmmoTextColor = reloadingAmmoTextColor; // ГЊГ®Г¦Г­Г  ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіГўГ ГІГЁ Г·ГҐГ°ГўГ®Г­ГЁГ© ГЄГ®Г«ВіГ°
                     }
                     else
                     {
@@ -176,14 +176,14 @@ public class WeaponUIController : MonoBehaviour
                     }
                 }
             }
-            // else - newAmmoText залишається порожнім, якщо немає активної зброї
+            // else - newAmmoText Г§Г Г«ГЁГёГ ВєГІГјГ±Гї ГЇГ®Г°Г®Г¦Г­ВіГ¬, ГїГЄГ№Г® Г­ГҐГ¬Г Вє Г ГЄГІГЁГўГ­Г®Вї Г§ГЎГ°Г®Вї
 
-            // Оновлюємо текст лише, якщо він змінився
+            // ГЋГ­Г®ГўГ«ГѕВєГ¬Г® ГІГҐГЄГ±ГІ Г«ГЁГёГҐ, ГїГЄГ№Г® ГўВіГ­ Г§Г¬ВіГ­ГЁГўГ±Гї
             if (forceUpdate || ammoText.text != newAmmoText)
             {
                 ammoText.text = newAmmoText;
             }
-            // Плавно змінюємо колір тексту патронів
+            // ГЏГ«Г ГўГ­Г® Г§Г¬ВіГ­ГѕВєГ¬Г® ГЄГ®Г«ВіГ° ГІГҐГЄГ±ГІГі ГЇГ ГІГ°Г®Г­ВіГў
             ammoText.color = Color.Lerp(ammoText.color, targetAmmoTextColor, Time.deltaTime * textColorLerpSpeed);
         }
     }

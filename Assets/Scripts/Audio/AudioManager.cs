@@ -1,361 +1,638 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using System.Collections.Generic;
-using IndieShooter.Core;
+using System.Collections;
 
-namespace IndieShooter.Audio
+/// <summary>
+/// Централізований менеджер аудіо системи. Інтегрований з Event System для автоматичного відтворення звуків.
+/// </summary>
+public class AudioManager : MonoBehaviour, 
+    IEventHandler<WeaponFiredEvent>,
+    IEventHandler<PlayerHealthChangedEvent>,
+    IEventHandler<PlayerMovementStateChangedEvent>,
+    IEventHandler<WeaponReloadStartedEvent>,
+    IEventHandler<WeaponSwitchedEvent>,
+    IEventHandler<PlaySoundEvent>
 {
-    [System.Serializable]
-    public class SoundEffect
+    [Header("Audio Mixer")]
+    [Tooltip("Головний Audio Mixer")]
+    public AudioMixerGroup masterMixer;
+    [Tooltip("Група для музики")]
+    public AudioMixerGroup musicMixer;
+    [Tooltip("Група для звукових ефектів")]
+    public AudioMixerGroup sfxMixer;
+    [Tooltip("Група для голосу")]
+    public AudioMixerGroup voiceMixer;
+    [Tooltip("Група для звуків оточення")]
+    public AudioMixerGroup ambientMixer;
+
+    [Header("Audio Sources")]
+    [Tooltip("Кількість AudioSource для SFX")]
+    [Range(5, 20)]
+    public int sfxSourceCount = 10;
+    [Tooltip("AudioSource для музики")]
+    public AudioSource musicSource;
+    [Tooltip("AudioSource для голосу")]
+    public AudioSource voiceSource;
+    [Tooltip("AudioSource для звуків оточення")]
+    public AudioSource ambientSource;
+
+    [Header("Audio Settings")]
+    [Tooltip("Загальна гучність")]
+    [Range(0f, 1f)]
+    public float masterVolume = 1f;
+    [Tooltip("Гучність музики")]
+    [Range(0f, 1f)]
+    public float musicVolume = 0.7f;
+    [Tooltip("Гучність SFX")]
+    [Range(0f, 1f)]
+    public float sfxVolume = 1f;
+    [Tooltip("Гучність голосу")]
+    [Range(0f, 1f)]
+    public float voiceVolume = 1f;
+    [Tooltip("Гучність оточення")]
+    [Range(0f, 1f)]
+    public float ambientVolume = 0.5f;
+
+    [Header("3D Audio Settings")]
+    [Tooltip("Увімкнути 3D звук?")]
+    public bool enable3DAudio = true;
+    [Tooltip("Максимальна дистанція 3D звуку")]
+    [Range(10f, 100f)]
+    public float maxAudioDistance = 50f;
+    [Tooltip("Мінімальна дистанція 3D звуку")]
+    [Range(1f, 10f)]
+    public float minAudioDistance = 5f;
+
+    [Header("Audio Collections")]
+    [Tooltip("Колекція звуків зброї")]
+    public WeaponAudioCollection weaponAudio;
+    [Tooltip("Колекція звуків гравця")]
+    public PlayerAudioCollection playerAudio;
+    [Tooltip("Колекція звуків UI")]
+    public UIAudioCollection uiAudio;
+    [Tooltip("Колекція звуків оточення")]
+    public EnvironmentAudioCollection environmentAudio;
+
+    // Приватні змінні
+    private Queue<AudioSource> availableSFXSources = new Queue<AudioSource>();
+    private List<AudioSource> allSFXSources = new List<AudioSource>();
+    private Dictionary<string, AudioClip> audioClipCache = new Dictionary<string, AudioClip>();
+    private Coroutine musicFadeCoroutine;
+
+    // Singleton
+    public static AudioManager Instance { get; private set; }
+
+    void Awake()
     {
-        public string name;
-        public AudioClip clip;
-        [Range(0f, 1f)]
-        public float volume = 1f;
-        [Range(0.1f, 3f)]
-        public float pitch = 1f;
-        public bool randomizePitch = false;
-        [Range(0f, 0.5f)]
-        public float pitchVariation = 0.1f;
-        public bool loop = false;
-        public float cooldown = 0f;
-        
-        [HideInInspector]
-        public float lastPlayTime = 0f;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeAudioManager();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
-    
-    public class AudioManager : MonoBehaviour
+
+    void Start()
     {
-        public static AudioManager Instance { get; private set; }
-        
-        [Header("Audio Settings")]
-        [Range(0f, 1f)]
-        public float masterVolume = 1f;
-        [Range(0f, 1f)]
-        public float sfxVolume = 0.8f;
-        [Range(0f, 1f)]
-        public float ambientVolume = 0.6f;
-        
-        [Header("Audio Sources")]
-        public int audioSourcePoolSize = 10;
-        
-        [Header("Sound Effects")]
-        public List<SoundEffect> soundEffects = new List<SoundEffect>();
-        
-        private Queue<AudioSource> audioSourcePool;
-        private List<AudioSource> activeAudioSources;
-        private Dictionary<string, SoundEffect> soundDatabase;
-        private Transform audioSourceParent;
-        
-        void Awake()
+        // Підписуємося на події
+        Events.Subscribe<WeaponFiredEvent>(this);
+        Events.Subscribe<PlayerHealthChangedEvent>(this);
+        Events.Subscribe<PlayerMovementStateChangedEvent>(this);
+        Events.Subscribe<WeaponReloadStartedEvent>(this);
+        Events.Subscribe<WeaponSwitchedEvent>(this);
+        Events.Subscribe<PlaySoundEvent>(this);
+
+        // Застосовуємо налаштування гучності
+        ApplyVolumeSettings();
+    }
+
+    void OnDestroy()
+    {
+        // Відписуємося від подій
+        Events.Unsubscribe<WeaponFiredEvent>(this);
+        Events.Unsubscribe<PlayerHealthChangedEvent>(this);
+        Events.Unsubscribe<PlayerMovementStateChangedEvent>(this);
+        Events.Unsubscribe<WeaponReloadStartedEvent>(this);
+        Events.Unsubscribe<WeaponSwitchedEvent>(this);
+        Events.Unsubscribe<PlaySoundEvent>(this);
+    }
+
+    /// <summary>
+    /// Ініціалізує Audio Manager
+    /// </summary>
+    void InitializeAudioManager()
+    {
+        // Створюємо пул AudioSource для SFX
+        CreateSFXSourcePool();
+
+        // Налаштовуємо основні AudioSource
+        SetupMainAudioSources();
+
+        // Кешуємо аудіо кліпи
+        CacheAudioClips();
+
+        Debug.Log($"AudioManager ініціалізовано з {sfxSourceCount} SFX джерелами");
+    }
+
+    /// <summary>
+    /// Створює пул AudioSource для звукових ефектів
+    /// </summary>
+    void CreateSFXSourcePool()
+    {
+        for (int i = 0; i < sfxSourceCount; i++)
         {
-            if (Instance == null)
+            GameObject sfxObject = new GameObject($"SFX_AudioSource_{i}");
+            sfxObject.transform.SetParent(transform);
+
+            AudioSource source = sfxObject.AddComponent<AudioSource>();
+            source.outputAudioMixerGroup = sfxMixer;
+            source.playOnAwake = false;
+            source.spatialBlend = enable3DAudio ? 1f : 0f;
+            source.maxDistance = maxAudioDistance;
+            source.minDistance = minAudioDistance;
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+
+            allSFXSources.Add(source);
+            availableSFXSources.Enqueue(source);
+        }
+    }
+
+    /// <summary>
+    /// Налаштовує основні AudioSource
+    /// </summary>
+    void SetupMainAudioSources()
+    {
+        // Музика
+        if (musicSource == null)
+        {
+            GameObject musicObject = new GameObject("Music_AudioSource");
+            musicObject.transform.SetParent(transform);
+            musicSource = musicObject.AddComponent<AudioSource>();
+        }
+        musicSource.outputAudioMixerGroup = musicMixer;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.spatialBlend = 0f; // 2D звук
+
+        // Голос
+        if (voiceSource == null)
+        {
+            GameObject voiceObject = new GameObject("Voice_AudioSource");
+            voiceObject.transform.SetParent(transform);
+            voiceSource = voiceObject.AddComponent<AudioSource>();
+        }
+        voiceSource.outputAudioMixerGroup = voiceMixer;
+        voiceSource.playOnAwake = false;
+        voiceSource.spatialBlend = 0f; // 2D звук
+
+        // Оточення
+        if (ambientSource == null)
+        {
+            GameObject ambientObject = new GameObject("Ambient_AudioSource");
+            ambientObject.transform.SetParent(transform);
+            ambientSource = ambientObject.AddComponent<AudioSource>();
+        }
+        ambientSource.outputAudioMixerGroup = ambientMixer;
+        ambientSource.loop = true;
+        ambientSource.playOnAwake = false;
+        ambientSource.spatialBlend = 0f; // 2D звук
+    }
+
+    /// <summary>
+    /// Кешує аудіо кліпи для швидкого доступу
+    /// </summary>
+    void CacheAudioClips()
+    {
+        if (weaponAudio != null) CacheAudioCollection(weaponAudio.GetAllClips());
+        if (playerAudio != null) CacheAudioCollection(playerAudio.GetAllClips());
+        if (uiAudio != null) CacheAudioCollection(uiAudio.GetAllClips());
+        if (environmentAudio != null) CacheAudioCollection(environmentAudio.GetAllClips());
+    }
+
+    void CacheAudioCollection(Dictionary<string, AudioClip> clips)
+    {
+        foreach (var kvp in clips)
+        {
+            audioClipCache[kvp.Key] = kvp.Value;
+        }
+    }
+
+    // ================================
+    // EVENT HANDLERS
+    // ================================
+
+    public void HandleEvent(WeaponFiredEvent eventData)
+    {
+        if (weaponAudio != null)
+        {
+            var shootSound = weaponAudio.GetWeaponFireSound(eventData.WeaponName);
+            if (shootSound != null)
             {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-                InitializeAudioSystem();
-            }
-            else
-            {
-                Destroy(gameObject);
+                PlaySFX(shootSound, eventData.FirePosition);
             }
         }
-        
-        void Start()
+    }
+
+    public void HandleEvent(PlayerHealthChangedEvent eventData)
+    {
+        if (playerAudio != null)
         {
-            // Subscribe to game events
-            EventSystem.Instance?.Subscribe("WeaponFired", OnWeaponFired);
-            EventSystem.Instance?.Subscribe("BulletHit", OnBulletHit);
-            EventSystem.Instance?.Subscribe("EnemyDied", OnEnemyDied);
-            EventSystem.Instance?.Subscribe("PlayerDied", OnPlayerDied);
-            EventSystem.Instance?.Subscribe("WeaponReloading", OnWeaponReloading);
-            EventSystem.Instance?.Subscribe("WeaponReloaded", OnWeaponReloaded);
-            EventSystem.Instance?.Subscribe("PlayerSpawned", OnPlayerSpawned);
-        }
-        
-        void InitializeAudioSystem()
-        {
-            // Create audio source parent
-            GameObject parent = new GameObject("Audio Sources");
-            parent.transform.SetParent(transform);
-            audioSourceParent = parent.transform;
-            
-            // Initialize audio source pool
-            audioSourcePool = new Queue<AudioSource>();
-            activeAudioSources = new List<AudioSource>();
-            
-            for (int i = 0; i < audioSourcePoolSize; i++)
+            if (eventData.IsDamage)
             {
-                CreateAudioSource();
-            }
-            
-            // Initialize sound database
-            soundDatabase = new Dictionary<string, SoundEffect>();
-            foreach (SoundEffect sfx in soundEffects)
-            {
-                if (!string.IsNullOrEmpty(sfx.name))
+                var damageSound = playerAudio.GetDamageSound();
+                if (damageSound != null)
                 {
-                    soundDatabase[sfx.name] = sfx;
+                    PlaySFX(damageSound);
                 }
             }
-            
-            // Load audio settings
-            LoadAudioSettings();
-        }
-        
-        AudioSource CreateAudioSource()
-        {
-            GameObject audioObj = new GameObject("AudioSource");
-            audioObj.transform.SetParent(audioSourceParent);
-            AudioSource audioSource = audioObj.AddComponent<AudioSource>();
-            
-            // Configure audio source
-            audioSource.playOnAwake = false;
-            audioSource.spatialBlend = 0f; // 2D sound for now
-            
-            audioSourcePool.Enqueue(audioSource);
-            return audioSource;
-        }
-        
-        AudioSource GetAudioSource()
-        {
-            if (audioSourcePool.Count > 0)
+            else if (eventData.IsHealing)
             {
-                AudioSource source = audioSourcePool.Dequeue();
-                activeAudioSources.Add(source);
-                return source;
-            }
-            else
-            {
-                // Create new audio source if pool is empty
-                AudioSource newSource = CreateAudioSource();
-                activeAudioSources.Add(newSource);
-                return newSource;
-            }
-        }
-        
-        void ReturnAudioSource(AudioSource source)
-        {
-            if (source != null)
-            {
-                source.Stop();
-                source.clip = null;
-                activeAudioSources.Remove(source);
-                audioSourcePool.Enqueue(source);
-            }
-        }
-        
-        public void PlaySFX(string soundName, Vector3 position = default)
-        {
-            if (!soundDatabase.ContainsKey(soundName))
-            {
-                Debug.LogWarning($"Sound effect '{soundName}' not found!");
-                return;
-            }
-            
-            SoundEffect sfx = soundDatabase[soundName];
-            
-            // Check cooldown
-            if (Time.time - sfx.lastPlayTime < sfx.cooldown)
-            {
-                return;
-            }
-            
-            if (sfx.clip == null)
-            {
-                Debug.LogWarning($"Audio clip for '{soundName}' is null!");
-                return;
-            }
-            
-            AudioSource audioSource = GetAudioSource();
-            
-            // Configure audio source
-            audioSource.clip = sfx.clip;
-            audioSource.volume = sfx.volume * sfxVolume * masterVolume;
-            
-            // Handle pitch variation
-            if (sfx.randomizePitch)
-            {
-                audioSource.pitch = sfx.pitch + Random.Range(-sfx.pitchVariation, sfx.pitchVariation);
-            }
-            else
-            {
-                audioSource.pitch = sfx.pitch;
-            }
-            
-            audioSource.loop = sfx.loop;
-            
-            // Set position (for future 3D audio support)
-            if (position != default)
-            {
-                audioSource.transform.position = position;
-            }
-            
-            // Play sound
-            audioSource.Play();
-            sfx.lastPlayTime = Time.time;
-            
-            // Return to pool when finished (if not looping)
-            if (!sfx.loop)
-            {
-                StartCoroutine(ReturnAudioSourceWhenFinished(audioSource, sfx.clip.length / audioSource.pitch));
-            }
-        }
-        
-        public void PlaySFXAtPosition(string soundName, Vector3 position)
-        {
-            PlaySFX(soundName, position);
-        }
-        
-        public void StopSFX(string soundName)
-        {
-            foreach (AudioSource source in activeAudioSources)
-            {
-                if (source.clip != null && soundDatabase.ContainsKey(soundName))
+                var healSound = playerAudio.GetHealSound();
+                if (healSound != null)
                 {
-                    if (source.clip == soundDatabase[soundName].clip)
-                    {
-                        ReturnAudioSource(source);
-                        break;
-                    }
+                    PlaySFX(healSound);
                 }
             }
         }
-        
-        public void StopAllSFX()
+    }
+
+    public void HandleEvent(PlayerMovementStateChangedEvent eventData)
+    {
+        if (playerAudio != null)
         {
-            List<AudioSource> sourcesToReturn = new List<AudioSource>(activeAudioSources);
-            foreach (AudioSource source in sourcesToReturn)
+            switch (eventData.NewState)
             {
-                ReturnAudioSource(source);
+                case PlayerMovementStateChangedEvent.MovementState.Jumping:
+                    var jumpSound = playerAudio.GetJumpSound();
+                    if (jumpSound != null) PlaySFX(jumpSound);
+                    break;
+                case PlayerMovementStateChangedEvent.MovementState.Falling:
+                    // Можна додати звук падіння
+                    break;
             }
         }
-        
-        System.Collections.IEnumerator ReturnAudioSourceWhenFinished(AudioSource source, float delay)
+    }
+
+    public void HandleEvent(WeaponReloadStartedEvent eventData)
+    {
+        if (weaponAudio != null)
         {
-            yield return new WaitForSeconds(delay);
-            ReturnAudioSource(source);
-        }
-        
-        // Volume control methods
-        public void SetMasterVolume(float volume)
-        {
-            masterVolume = Mathf.Clamp01(volume);
-            UpdateAllVolumes();
-            SaveAudioSettings();
-        }
-        
-        public void SetSFXVolume(float volume)
-        {
-            sfxVolume = Mathf.Clamp01(volume);
-            UpdateAllVolumes();
-            SaveAudioSettings();
-        }
-        
-        public void SetAmbientVolume(float volume)
-        {
-            ambientVolume = Mathf.Clamp01(volume);
-            SaveAudioSettings();
-        }
-        
-        void UpdateAllVolumes()
-        {
-            foreach (AudioSource source in activeAudioSources)
+            var reloadSound = weaponAudio.GetWeaponReloadSound(eventData.WeaponName);
+            if (reloadSound != null)
             {
-                if (source.clip != null)
-                {
-                    // Find the original sound effect to get base volume
-                    foreach (SoundEffect sfx in soundEffects)
-                    {
-                        if (sfx.clip == source.clip)
-                        {
-                            source.volume = sfx.volume * sfxVolume * masterVolume;
-                            break;
-                        }
-                    }
-                }
+                PlaySFX(reloadSound);
             }
         }
-        
-        // Event handlers
-        void OnWeaponFired(object data)
+    }
+
+    public void HandleEvent(WeaponSwitchedEvent eventData)
+    {
+        if (weaponAudio != null)
         {
-            PlaySFX("WeaponFire");
-        }
-        
-        void OnBulletHit(object data)
-        {
-            if (data is RaycastHit hit)
+            var switchSound = weaponAudio.GetWeaponSwitchSound();
+            if (switchSound != null)
             {
-                string soundName = GetImpactSoundName(hit.collider.tag);
-                PlaySFXAtPosition(soundName, hit.point);
+                PlaySFX(switchSound);
             }
         }
-        
-        void OnEnemyDied(object data)
+    }
+
+    public void HandleEvent(PlaySoundEvent eventData)
+    {
+        switch (eventData.Type)
         {
-            PlaySFX("EnemyDeath");
+            case PlaySoundEvent.SoundType.SFX:
+                PlaySFX(eventData.AudioClip, eventData.Position, eventData.Volume, eventData.Is3D);
+                break;
+            case PlaySoundEvent.SoundType.Music:
+                PlayMusic(eventData.AudioClip, eventData.Volume);
+                break;
+            case PlaySoundEvent.SoundType.Voice:
+                PlayVoice(eventData.AudioClip, eventData.Volume);
+                break;
+            case PlaySoundEvent.SoundType.Ambient:
+                PlayAmbient(eventData.AudioClip, eventData.Volume);
+                break;
         }
-        
-        void OnPlayerDied(object data)
+    }
+
+    // ================================
+    // PUBLIC METHODS
+    // ================================
+
+    /// <summary>
+    /// Відтворює звуковий ефект
+    /// </summary>
+    public void PlaySFX(AudioClip clip, Vector3 position = default, float volume = 1f, bool is3D = false)
+    {
+        if (clip == null) return;
+
+        AudioSource source = GetAvailableSFXSource();
+        if (source == null) return;
+
+        source.clip = clip;
+        source.volume = volume * sfxVolume * masterVolume;
+        source.spatialBlend = (enable3DAudio && is3D) ? 1f : 0f;
+
+        if (is3D && position != default)
         {
-            PlaySFX("PlayerDeath");
+            source.transform.position = position;
         }
-        
-        void OnWeaponReloading(object data)
+
+        source.Play();
+        StartCoroutine(ReturnSFXSourceWhenFinished(source, clip.length));
+    }
+
+    /// <summary>
+    /// Відтворює музику
+    /// </summary>
+    public void PlayMusic(AudioClip clip, float volume = 1f, bool fadeIn = true)
+    {
+        if (clip == null || musicSource == null) return;
+
+        if (musicFadeCoroutine != null)
         {
-            PlaySFX("WeaponReload");
+            StopCoroutine(musicFadeCoroutine);
         }
-        
-        void OnWeaponReloaded(object data)
+
+        if (fadeIn && musicSource.isPlaying)
         {
-            PlaySFX("WeaponReloadComplete");
+            musicFadeCoroutine = StartCoroutine(FadeMusic(clip, volume));
         }
-        
-        void OnPlayerSpawned(object data)
+        else
         {
-            PlaySFX("PlayerSpawn");
+            musicSource.clip = clip;
+            musicSource.volume = volume * musicVolume * masterVolume;
+            musicSource.Play();
         }
-        
-        string GetImpactSoundName(string surfaceTag)
+    }
+
+    /// <summary>
+    /// Відтворює голос
+    /// </summary>
+    public void PlayVoice(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null || voiceSource == null) return;
+
+        voiceSource.clip = clip;
+        voiceSource.volume = volume * voiceVolume * masterVolume;
+        voiceSource.Play();
+    }
+
+    /// <summary>
+    /// Відтворює звуки оточення
+    /// </summary>
+    public void PlayAmbient(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null || ambientSource == null) return;
+
+        ambientSource.clip = clip;
+        ambientSource.volume = volume * ambientVolume * masterVolume;
+        ambientSource.Play();
+    }
+
+    /// <summary>
+    /// Зупиняє всю музику
+    /// </summary>
+    public void StopMusic(bool fadeOut = true)
+    {
+        if (musicSource == null) return;
+
+        if (fadeOut)
         {
-            switch (surfaceTag)
+            if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = StartCoroutine(FadeOutMusic());
+        }
+        else
+        {
+            musicSource.Stop();
+        }
+    }
+
+    /// <summary>
+    /// Застосовує налаштування гучності
+    /// </summary>
+    public void ApplyVolumeSettings()
+    {
+        if (masterMixer != null)
+        {
+            masterMixer.audioMixer.SetFloat("MasterVolume", Mathf.Log10(masterVolume) * 20);
+            masterMixer.audioMixer.SetFloat("MusicVolume", Mathf.Log10(musicVolume) * 20);
+            masterMixer.audioMixer.SetFloat("SFXVolume", Mathf.Log10(sfxVolume) * 20);
+            masterMixer.audioMixer.SetFloat("VoiceVolume", Mathf.Log10(voiceVolume) * 20);
+            masterMixer.audioMixer.SetFloat("AmbientVolume", Mathf.Log10(ambientVolume) * 20);
+        }
+    }
+
+    // ================================
+    // PRIVATE METHODS
+    // ================================
+
+    AudioSource GetAvailableSFXSource()
+    {
+        if (availableSFXSources.Count > 0)
+        {
+            return availableSFXSources.Dequeue();
+        }
+
+        // Якщо немає доступних джерел, знаходимо найстаріше
+        AudioSource oldestSource = null;
+        float oldestTime = float.MaxValue;
+
+        foreach (var source in allSFXSources)
+        {
+            if (!source.isPlaying)
             {
-                case "Ground":
-                    return "ImpactDirt";
-                case "Wall":
-                    return "ImpactConcrete";
-                case "Enemy":
-                    return "ImpactFlesh";
-                default:
-                    return "ImpactDefault";
+                availableSFXSources.Enqueue(source);
+                return availableSFXSources.Dequeue();
+            }
+
+            if (source.time < oldestTime)
+            {
+                oldestTime = source.time;
+                oldestSource = source;
             }
         }
+
+        return oldestSource;
+    }
+
+    IEnumerator ReturnSFXSourceWhenFinished(AudioSource source, float duration)
+    {
+        yield return new WaitForSeconds(duration);
         
-        // Settings persistence
-        void SaveAudioSettings()
+        if (source != null)
         {
-            PlayerPrefs.SetFloat("MasterVolume", masterVolume);
-            PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
-            PlayerPrefs.SetFloat("AmbientVolume", ambientVolume);
-            PlayerPrefs.Save();
+            source.Stop();
+            availableSFXSources.Enqueue(source);
         }
+    }
+
+    IEnumerator FadeMusic(AudioClip newClip, float targetVolume)
+    {
+        float startVolume = musicSource.volume;
         
-        void LoadAudioSettings()
+        // Fade out
+        while (musicSource.volume > 0)
         {
-            masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
-            sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 0.8f);
-            ambientVolume = PlayerPrefs.GetFloat("AmbientVolume", 0.6f);
+            musicSource.volume -= startVolume * Time.deltaTime / 1f; // 1 секунда fade
+            yield return null;
         }
+
+        // Змінюємо кліп
+        musicSource.clip = newClip;
+        musicSource.Play();
+
+        // Fade in
+        float finalVolume = targetVolume * musicVolume * masterVolume;
+        while (musicSource.volume < finalVolume)
+        {
+            musicSource.volume += finalVolume * Time.deltaTime / 1f; // 1 секунда fade
+            yield return null;
+        }
+
+        musicSource.volume = finalVolume;
+        musicFadeCoroutine = null;
+    }
+
+    IEnumerator FadeOutMusic()
+    {
+        float startVolume = musicSource.volume;
         
-        void OnDestroy()
+        while (musicSource.volume > 0)
         {
-            EventSystem.Instance?.Unsubscribe("WeaponFired", OnWeaponFired);
-            EventSystem.Instance?.Unsubscribe("BulletHit", OnBulletHit);
-            EventSystem.Instance?.Unsubscribe("EnemyDied", OnEnemyDied);
-            EventSystem.Instance?.Unsubscribe("PlayerDied", OnPlayerDied);
-            EventSystem.Instance?.Unsubscribe("WeaponReloading", OnWeaponReloading);
-            EventSystem.Instance?.Unsubscribe("WeaponReloaded", OnWeaponReloaded);
-            EventSystem.Instance?.Unsubscribe("PlayerSpawned", OnPlayerSpawned);
+            musicSource.volume -= startVolume * Time.deltaTime / 1f;
+            yield return null;
         }
+
+        musicSource.Stop();
+        musicFadeCoroutine = null;
+    }
+}
+
+// ================================
+// AUDIO COLLECTIONS
+// ================================
+
+[System.Serializable]
+public class WeaponAudioCollection
+{
+    [Header("Weapon Sounds")]
+    public AudioClip[] rifleFireSounds;
+    public AudioClip[] pistolFireSounds;
+    public AudioClip[] shotgunFireSounds;
+    public AudioClip[] reloadSounds;
+    public AudioClip weaponSwitchSound;
+    public AudioClip emptyClipSound;
+
+    public AudioClip GetWeaponFireSound(string weaponName)
+    {
+        // Логіка вибору звуку на основі назви зброї
+        if (weaponName.ToLower().Contains("rifle") && rifleFireSounds.Length > 0)
+            return rifleFireSounds[Random.Range(0, rifleFireSounds.Length)];
+        if (weaponName.ToLower().Contains("pistol") && pistolFireSounds.Length > 0)
+            return pistolFireSounds[Random.Range(0, pistolFireSounds.Length)];
+        if (weaponName.ToLower().Contains("shotgun") && shotgunFireSounds.Length > 0)
+            return shotgunFireSounds[Random.Range(0, shotgunFireSounds.Length)];
+        
+        return rifleFireSounds.Length > 0 ? rifleFireSounds[0] : null;
+    }
+
+    public AudioClip GetWeaponReloadSound(string weaponName)
+    {
+        return reloadSounds.Length > 0 ? reloadSounds[Random.Range(0, reloadSounds.Length)] : null;
+    }
+
+    public AudioClip GetWeaponSwitchSound()
+    {
+        return weaponSwitchSound;
+    }
+
+    public Dictionary<string, AudioClip> GetAllClips()
+    {
+        var clips = new Dictionary<string, AudioClip>();
+        // Додаємо всі кліпи до словника
+        return clips;
+    }
+}
+
+[System.Serializable]
+public class PlayerAudioCollection
+{
+    [Header("Player Sounds")]
+    public AudioClip[] footstepSounds;
+    public AudioClip[] jumpSounds;
+    public AudioClip[] damageSounds;
+    public AudioClip[] healSounds;
+    public AudioClip deathSound;
+    public AudioClip respawnSound;
+
+    public AudioClip GetFootstepSound()
+    {
+        return footstepSounds.Length > 0 ? footstepSounds[Random.Range(0, footstepSounds.Length)] : null;
+    }
+
+    public AudioClip GetJumpSound()
+    {
+        return jumpSounds.Length > 0 ? jumpSounds[Random.Range(0, jumpSounds.Length)] : null;
+    }
+
+    public AudioClip GetDamageSound()
+    {
+        return damageSounds.Length > 0 ? damageSounds[Random.Range(0, damageSounds.Length)] : null;
+    }
+
+    public AudioClip GetHealSound()
+    {
+        return healSounds.Length > 0 ? healSounds[Random.Range(0, healSounds.Length)] : null;
+    }
+
+    public Dictionary<string, AudioClip> GetAllClips()
+    {
+        var clips = new Dictionary<string, AudioClip>();
+        // Додаємо всі кліпи до словника
+        return clips;
+    }
+}
+
+[System.Serializable]
+public class UIAudioCollection
+{
+    [Header("UI Sounds")]
+    public AudioClip buttonClickSound;
+    public AudioClip buttonHoverSound;
+    public AudioClip menuOpenSound;
+    public AudioClip menuCloseSound;
+    public AudioClip errorSound;
+    public AudioClip successSound;
+
+    public Dictionary<string, AudioClip> GetAllClips()
+    {
+        var clips = new Dictionary<string, AudioClip>();
+        if (buttonClickSound != null) clips["button_click"] = buttonClickSound;
+        if (buttonHoverSound != null) clips["button_hover"] = buttonHoverSound;
+        return clips;
+    }
+}
+
+[System.Serializable]
+public class EnvironmentAudioCollection
+{
+    [Header("Environment Sounds")]
+    public AudioClip[] ambientSounds;
+    public AudioClip[] windSounds;
+    public AudioClip[] rainSounds;
+    public AudioClip[] explosionSounds;
+
+    public Dictionary<string, AudioClip> GetAllClips()
+    {
+        var clips = new Dictionary<string, AudioClip>();
+        // Додаємо всі кліпи до словника
+        return clips;
     }
 }
